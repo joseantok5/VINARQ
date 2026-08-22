@@ -864,12 +864,13 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
     <div class="field">
       <label>firebaseConfig</label>
       <textarea id="cfgInput" placeholder='const firebaseConfig = {
-  apiKey: "AIza...",
-  authDomain: "vinarq-xxxx.firebaseapp.com",
-  projectId: "vinarq-xxxx",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
+  apiKey: "AIzaSyBblRloRIY2_yS8BhZV7MbGEtF5rigRtys",
+  authDomain: "vinarq-5c904.firebaseapp.com",
+  projectId: "vinarq-5c904",
+  storageBucket: "vinarq-5c904.firebasestorage.app",
+  messagingSenderId: "724839142934",
+  appId: "1:724839142934:web:2df4dd2c07886419008737",
+  measurementId: "G-MYX64GXK3G"
 };'></textarea>
     </div>
     <button class="btn btn-primary btn-full" onclick="guardarConfig()">Conectar con Firebase</button>
@@ -972,7 +973,7 @@ window.resetConfig = function(){
 }
 </script>
 
-<!-- UI 2.5 PRO+ MOBILE: imágenes integradas + Firebase integrado para cualquier dispositivo -->
+<!-- UI 2.5.1 PRO+ MOBILE: Firebase corregido desde Firebase Console + imágenes integradas -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
@@ -1114,7 +1115,12 @@ window.doLogin = async function(){
       document.getElementById('aPass').value);
   }catch(e){
     m.className='msg err show';
-    m.textContent = e.code==='auth/invalid-credential' ? 'Correo o contraseña incorrectos' : e.message;
+    m.textContent =
+      e.code==='auth/invalid-credential' ? 'Correo o contraseña incorrectos' :
+      e.code==='auth/unauthorized-domain' ? 'Este dominio aún no está autorizado en Firebase Authentication.' :
+      e.code==='auth/network-request-failed' ? 'No se pudo conectar con Firebase. Revisa tu conexión a Internet.' :
+      e.code==='auth/too-many-requests' ? 'Demasiados intentos. Espera unos minutos y vuelve a intentar.' :
+      e.message;
   }
 }
 window.doLogout = async function(){ if(unsub) unsub(); await signOut(auth); }
