@@ -611,6 +611,26 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
 .inst-visual{position:absolute;right:16px;bottom:16px;width:43%;max-width:360px;min-width:240px;opacity:.92;z-index:1;pointer-events:none}
 .inst-visual.wide{width:48%}
 .inst-visual svg{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 34px rgba(0,0,0,.18))}
+.inst-visual.photo{display:flex;justify-content:flex-end;align-items:flex-end}
+.inst-visual .photo-frame{position:relative;display:block;width:100%;aspect-ratio:16/10;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.09);background:#0b1012;box-shadow:0 22px 44px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03)}
+.inst-visual .photo-frame::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,16,18,.06) 0%,rgba(11,16,18,0) 32%,rgba(11,16,18,.18) 62%,rgba(6,8,9,.74) 100%);z-index:1}
+.inst-visual .photo-frame::after{content:'';position:absolute;inset:0;border-radius:22px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);z-index:3}
+.inst-visual img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.96) contrast(1.02) brightness(.9)}
+.inst-visual .photo-badge{position:absolute;left:14px;top:14px;z-index:2;display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(10,13,14,.48);backdrop-filter:blur(8px);color:rgba(245,241,232,.78);font-size:.56rem;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.inst-visual .photo-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(250,180,30,.09)}
+.inst-visual .photo-caption{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:rgba(245,241,232,.8)}
+.inst-visual .photo-title{font-size:.88rem;font-weight:800;line-height:1.15;letter-spacing:.01em;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.inst-visual .photo-copy{margin-top:4px;font-size:.58rem;line-height:1.45;color:rgba(245,241,232,.52)}
+.inst-visual .photo-meta{margin-top:7px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.inst-visual .photo-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(8,12,13,.34);color:rgba(245,241,232,.72);font-size:.52rem;font-weight:800;letter-spacing:.9px;text-transform:uppercase;backdrop-filter:blur(7px)}
+.inst-visual .photo-chip::before{content:'';width:5px;height:5px;border-radius:50%;background:#9fc8aa;box-shadow:0 0 0 4px rgba(159,200,170,.08)}
+.inst-visual .photo-code{position:absolute;right:14px;top:14px;z-index:2;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(8,12,13,.38);backdrop-filter:blur(8px);color:rgba(245,241,232,.58);font-size:.54rem;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.inst-visual .photo-frame,.inst-visual img,.inst-visual .photo-badge,.inst-visual .photo-caption,.inst-visual .photo-code{transition:transform .32s ease,opacity .32s ease,filter .32s ease,box-shadow .32s ease,border-color .32s ease}
+.project-main-hero:hover .inst-visual .photo-frame{transform:translateY(-4px) scale(1.008);border-color:rgba(250,180,30,.18);box-shadow:0 28px 50px rgba(0,0,0,.34),0 0 0 1px rgba(250,180,30,.06),inset 0 1px 0 rgba(255,255,255,.04)}
+.project-main-hero:hover .inst-visual img{transform:scale(1.045);filter:saturate(1.02) contrast(1.05) brightness(.94)}
+.project-main-hero:hover .inst-visual .photo-badge{transform:translateY(-1px)}
+.project-main-hero:hover .inst-visual .photo-code{transform:translateY(-1px)}
+.project-main-hero:hover .inst-visual .photo-caption{transform:translateY(-2px)}
 .project-hero-foot{position:relative;z-index:2;display:flex;gap:16px;align-items:center;margin-top:18px;color:rgba(242,241,235,.32);font-size:.61rem;flex-wrap:wrap}
 .project-hero-foot span{display:flex;align-items:center;gap:6px}.project-hero-foot i{width:18px;height:2px;border-radius:999px;background:var(--gold)}
 .project-hero-foot span:nth-child(2) i{background:#95b29b}.project-hero-foot span:nth-child(3) i{background:#8d989b}
@@ -938,9 +958,30 @@ const moneyK = n => {
   return S0(n);
 };
 const shortProjectName = s => String(s||'').replace(/(ELABORACI[ÓO]N|SUPERVISI[ÓO]N|EXPEDIENTE|T[ÉE]CNICO|PROYECTO|DE|DEL|LA|EL)/gi,'').replace(/\s+/g,' ').trim();
-function institutionalVisual(tipo='proyecto'){
-  const accent = tipo==='supervision' ? '#8fb1bc' : (tipo==='elaboracion' ? '#d9b56a' : '#9fc3ad');
-  const accent2 = tipo==='supervision' ? '#6f8992' : (tipo==='elaboracion' ? '#8ba08b' : '#d9b56a');
+function institutionalVisual(projectOrType='proyecto'){
+  const type = typeof projectOrType==='string' ? projectOrType : (projectOrType?.tipo || 'proyecto');
+  const projectId = typeof projectOrType==='object' && projectOrType ? projectOrType.id : '';
+  const projectName = typeof projectOrType==='object' && projectOrType ? (projectOrType.nombre || '') : '';
+  const projectOrder = typeof projectOrType==='object' && projectOrType ? String(projectOrType.orden || '').padStart(2,'0') : '';
+  const typeLabel = type==='supervision' ? 'Supervisión' : (type==='elaboracion' ? 'Elaboración' : 'Proyecto');
+  const imageMap = {
+    'p_hospital': {label: 'Hospital Regional', src: 'images/hospital-regional.webp'},
+    'p_iren': {label: 'Hospital IREN', src: 'images/hospital-iren.webp'},
+    'p_belen': {label: 'Hospital Belén', src: 'images/hospital-belen.webp'},
+    'p_huaman': {label: 'Centro de Salud Huamán', src: 'images/centro-salud-huaman.webp'},
+    'p_llacuabamba': {label: 'Centro de Salud Llacuabamba', src: 'images/centro-salud-llacuabamba.webp'},
+    'p_bomberos': {label: 'Bomberos El Porvenir', src: 'images/bomberos-el-porvenir.webp'}
+  };
+  if(projectId && imageMap[projectId]){
+    const item = imageMap[projectId];
+    const headline = item.label || projectName || 'Proyecto VINARQ';
+    const copy = projectName && projectName !== headline
+      ? `${projectName} · Imagen hero integrada al lenguaje visual ejecutivo de VINARQ.`
+      : `Imagen hero integrada al lenguaje visual ejecutivo de VINARQ.`;
+    return `<div class="photo-frame"><img src="${item.src}" alt="${headline}"><div class="photo-badge">Visual principal del proyecto</div><div class="photo-code">Proyecto ${projectOrder || '00'}</div><div class="photo-caption"><div class="photo-title">${headline}</div><div class="photo-copy">${copy}</div><div class="photo-meta"><span class="photo-chip">${typeLabel}</span></div></div></div>`;
+  }
+  const accent = type==='supervision' ? '#8fb1bc' : (type==='elaboracion' ? '#d9b56a' : '#9fc3ad');
+  const accent2 = type==='supervision' ? '#6f8992' : (type==='elaboracion' ? '#8ba08b' : '#d9b56a');
   return `<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
       <linearGradient id="vinGradA" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="${accent}" stop-opacity=".95"/><stop offset="100%" stop-color="#506166" stop-opacity=".2"/></linearGradient>
@@ -1355,8 +1396,8 @@ function renderProyecto(p){
             <div class="project-major-note">Margen actual <strong>${c.margen.toFixed(1)}%</strong> sobre el contrato. ${c.ganancia>=0?'Utilidad favorable del proyecto.':'La utilidad es negativa; revisar costos y cobros.'}</div>
           </div>
         </div>
-        <div class="inst-visual">${institutionalVisual(p.tipo)}</div>
-        <div class="project-hero-foot"><span><i></i>Prioridad visual en contrato y utilidad</span><span><i></i>Imagen institucional</span><span><i></i>${esc(footState)}</span></div>
+        <div class="inst-visual photo">${institutionalVisual(p)}</div>
+        <div class="project-hero-foot"><span><i></i>Prioridad visual en contrato y utilidad</span><span><i></i>Imagen del proyecto</span><span><i></i>${esc(footState)}</span></div>
       </section>
 
       <aside class="project-side-stack">
@@ -2031,4 +2072,3 @@ async function seed(){
 </script>
 </body>
 </html>
-
