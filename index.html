@@ -904,7 +904,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
     <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
     <div class="msg" id="aMsg"></div>
     <p class="hint" style="text-align:center">
-      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ · v2.5.2</span>
+      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ · v2.5.3</span>
     </p>
   </div>
 </div>
@@ -984,7 +984,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-/* ═══════════ ARRANQUE · FIREBASE INTEGRADO · UI 2.5.2 ═══════════ */
+/* ═══════════ ARRANQUE · FIREBASE INTEGRADO · UI 2.5.3 ═══════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyBblRloRIY2_yS8BhZV7MbGEtF5rigRtys",
   authDomain: "vinarq-5c904.firebaseapp.com",
@@ -1017,8 +1017,8 @@ const uid = () => Math.random().toString(36).slice(2,10);
 const S0 = n => 'S/ ' + Number(n||0).toLocaleString('es-PE',{maximumFractionDigits:0});
 const moneyK = n => {
   const a = Math.abs(Number(n||0));
-  if(a >= 1000000) return 'S/ ' + (Number(n)/1000000).toLocaleString('es-PE',{maximumFractionDigits:2}) + ' M';
-  if(a >= 1000) return 'S/ ' + (Number(n)/1000).toLocaleString('es-PE',{maximumFractionDigits:0}) + ' K';
+  if(a >= 1000000) return 'S/ ' + (Number(n)/1000000).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' M';
+  if(a >= 1000) return 'S/ ' + (Number(n)/1000).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' K';
   return S0(n);
 };
 const shortProjectName = s => String(s||'').replace(/(ELABORACI[ÓO]N|SUPERVISI[ÓO]N|EXPEDIENTE|T[ÉE]CNICO|PROYECTO|DE|DEL|LA|EL)/gi,'').replace(/\s+/g,' ').trim();
@@ -1245,8 +1245,8 @@ function renderResumen(){
   const money0 = n=>'S/ '+Number(n||0).toLocaleString('es-PE',{maximumFractionDigits:0});
   const moneyK = n=>{
     const a=Math.abs(Number(n||0));
-    if(a>=1000000) return 'S/ '+(Number(n)/1000000).toLocaleString('es-PE',{maximumFractionDigits:2})+' M';
-    if(a>=1000) return 'S/ '+(Number(n)/1000).toLocaleString('es-PE',{maximumFractionDigits:0})+' K';
+    if(a>=1000000) return 'S/ '+(Number(n)/1000000).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1})+' M';
+    if(a>=1000) return 'S/ '+(Number(n)/1000).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1})+' K';
     return money0(n);
   };
   const short = s=>String(s||'').replace(/\b(ELABORACIÓN|SUPERVISIÓN|EXPEDIENTE|TÉCNICO|PROYECTO|DE|DEL|LA|EL)\b/gi,'').replace(/\s+/g,' ').trim().slice(0,11) || 'Proyecto';
