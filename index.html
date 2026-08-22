@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VINARQ · Gestión de Proyectos · UI 2.1</title>
+<title>VINARQ · Gestión de Proyectos · UI 2.3 PRO</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
@@ -577,6 +577,192 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
   .donut-zone{grid-template-columns:1fr}.donut-wrap{height:165px}.profit-rank{margin-top:4px}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.2 · PROYECTOS + FINANZAS EDITORIALES
+   ═══════════════════════════════════════════════════════════════ */
+#sec-finanzas{padding-top:28px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:2px 0 20px}
+.section-eyebrow{font-size:.59rem;font-weight:800;letter-spacing:2px;color:rgba(250,180,30,.62);text-transform:uppercase;margin-bottom:7px}
+.section-h1{font-family:'Nunito',sans-serif;font-size:clamp(1.55rem,2vw,2.18rem);font-weight:800;letter-spacing:-.045em;line-height:1.03;color:var(--cream)}
+.section-sub{max-width:760px;margin-top:8px;color:rgba(242,241,235,.38);font-size:.75rem;line-height:1.52}
+.section-tags,.section-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.section-tag{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:999px;padding:7px 10px;color:rgba(242,241,235,.5);font-size:.63rem;font-weight:800;white-space:nowrap}
+.section-tag strong{color:var(--cream)}
+.section-tag.good{background:rgba(117,169,138,.055);border-color:rgba(117,169,138,.16);color:#9abfa4}
+.section-tag.warn{background:rgba(250,180,30,.05);border-color:rgba(250,180,30,.16);color:#ddb75d}
+.project-hero-grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(320px,.72fr);gap:18px;margin-bottom:18px}
+.project-main-hero{position:relative;overflow:hidden;padding:24px 26px 22px;min-height:315px;border-radius:22px;border:1px solid var(--line);background:
+  radial-gradient(circle at 82% 16%,rgba(250,180,30,.09),transparent 28%),
+  radial-gradient(circle at 16% 90%,rgba(117,169,138,.05),transparent 34%),
+  linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.013));box-shadow:0 24px 60px rgba(0,0,0,.22)}
+.project-main-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.42),transparent 84%)}
+.project-major-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:14px;max-width:66%;margin-top:18px}
+.project-major-tile{padding:16px 18px;border-radius:18px;border:1px solid var(--line-soft);background:rgba(8,11,12,.22);backdrop-filter:blur(6px)}
+.project-major-tile.contract{border-color:rgba(250,180,30,.14);background:linear-gradient(145deg,rgba(250,180,30,.06),rgba(255,255,255,.015))}
+.project-major-tile.gain{border-color:rgba(117,169,138,.14);background:linear-gradient(145deg,rgba(117,169,138,.06),rgba(255,255,255,.015))}
+.project-major-label{font-size:.6rem;text-transform:uppercase;letter-spacing:1.45px;color:rgba(242,241,235,.34);font-weight:800}
+.project-major-value{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,3.3vw,3.35rem);line-height:.94;letter-spacing:.01em;margin-top:8px}
+.project-major-tile.contract .project-major-value{color:var(--gold-light)}
+.project-major-tile.gain .project-major-value{color:#a6cbb0}
+.project-major-tile.gain .project-major-value.neg{color:#dc8a80}
+.project-major-note{margin-top:8px;font-size:.67rem;color:rgba(242,241,235,.38);line-height:1.45}
+.project-major-note strong{color:rgba(242,241,235,.66)}
+.inst-visual{position:absolute;right:16px;bottom:16px;width:43%;max-width:360px;min-width:240px;opacity:.92;z-index:1;pointer-events:none}
+.inst-visual.wide{width:48%}
+.inst-visual svg{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 34px rgba(0,0,0,.18))}
+.project-hero-foot{position:relative;z-index:2;display:flex;gap:16px;align-items:center;margin-top:18px;color:rgba(242,241,235,.32);font-size:.61rem;flex-wrap:wrap}
+.project-hero-foot span{display:flex;align-items:center;gap:6px}.project-hero-foot i{width:18px;height:2px;border-radius:999px;background:var(--gold)}
+.project-hero-foot span:nth-child(2) i{background:#95b29b}.project-hero-foot span:nth-child(3) i{background:#8d989b}
+.project-side-stack{display:grid;grid-template-rows:1fr 1fr;gap:18px}
+.hero-side-card.tight{padding:19px 20px 18px}
+.status-board{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+.status-box{padding:13px 14px;border-radius:14px;border:1px solid var(--line-soft);background:rgba(255,255,255,.022)}
+.status-box span{display:block;font-size:.56rem;text-transform:uppercase;letter-spacing:1px;color:rgba(242,241,235,.31);font-weight:800;margin-bottom:8px}
+.status-box b{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.28rem;line-height:1;color:var(--cream);font-weight:400}
+.status-box.gold b{color:#ddb75d}.status-box.red b{color:#d6877b}.status-box.blue b{color:#97b7c9}.status-box.green b{color:#9dc6a7}
+.meter-row{margin-top:14px}.meter-row:first-of-type{margin-top:10px}
+.meter-head{display:flex;justify-content:space-between;gap:10px;font-size:.64rem;color:rgba(242,241,235,.52);margin-bottom:6px}
+.meter-head b{color:rgba(242,241,235,.75)}
+.meter-line{height:5px;border-radius:999px;background:rgba(255,255,255,.05);overflow:hidden}.meter-line i{display:block;width:var(--w);height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),#89a690)}
+.meter-line.red i{background:linear-gradient(90deg,#c87970,#d0a476)}
+.metric-strip-card.emphasis{border-color:rgba(250,180,30,.14);background:linear-gradient(145deg,rgba(250,180,30,.055),rgba(255,255,255,.015))}
+.analysis-card.soft{padding:21px 22px 18px}
+.analysis-card .center-stat{margin-top:18px;text-align:center;padding:16px 0 5px;border-top:1px solid var(--line-soft)}
+.center-stat .label{font-size:.58rem;text-transform:uppercase;letter-spacing:1.2px;color:rgba(242,241,235,.3);font-weight:800}
+.center-stat .value{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;color:var(--cream);margin-top:6px}
+.center-stat .value.good{color:#a6cbb0}.center-stat .value.warn{color:#ddb75d}.center-stat .value.bad{color:#dc8a80}
+.donut-editorial{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;justify-items:center;gap:8px;padding-top:6px}
+.donut-canvas-wrap{position:relative;width:min(100%,280px);height:250px}
+.donut-canvas-wrap.compact{height:235px}
+.chart-center-copy{position:absolute;inset:0;display:grid;place-content:center;text-align:center;pointer-events:none}
+.chart-center-copy b{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1;color:var(--cream);font-weight:400}
+.chart-center-copy span{display:block;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:rgba(242,241,235,.3);margin-top:4px}
+.legend-note{margin-top:6px;font-size:.58rem;color:rgba(242,241,235,.3);text-align:center}
+.block-card{margin-bottom:16px;padding:18px 18px 16px}
+.block-card .card-title{font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:800;letter-spacing:1.05px;text-transform:uppercase;color:rgba(242,241,235,.7)}
+.block-card .card-title .lbl{gap:9px}
+.block-chip{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:rgba(242,241,235,.42);font-size:.55rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase}
+.action-group{display:flex;gap:7px;flex-wrap:wrap}
+.fin-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.highlight-stat{padding:8px 0 4px;text-align:center}
+.highlight-stat .name{font-size:.66rem;color:rgba(242,241,235,.52);font-weight:800;text-transform:uppercase;letter-spacing:1.2px}
+.highlight-stat .val{font-family:'Bebas Neue',sans-serif;font-size:2.45rem;line-height:1;color:#a6cbb0;margin:12px 0 6px}
+.highlight-stat .meta{font-size:.68rem;color:rgba(242,241,235,.4)}
+.pending-list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.pending-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 12px;border-radius:14px;border:1px solid var(--line-soft);background:rgba(255,255,255,.022)}
+.pending-item .p-title{font-size:.68rem;color:rgba(242,241,235,.78);font-weight:700}
+.pending-item .p-sub{font-size:.58rem;color:rgba(242,241,235,.32);margin-top:4px}
+.pending-item .p-val{font-family:'Bebas Neue',sans-serif;font-size:1.18rem;color:#ddb75d;white-space:nowrap}
+@media(max-width:1180px){.project-hero-grid{grid-template-columns:1fr}.project-side-stack{grid-template-columns:1fr 1fr;grid-template-rows:auto}.fin-grid3{grid-template-columns:1fr}}
+@media(max-width:900px){.project-major-grid{max-width:100%;grid-template-columns:1fr 1fr}.inst-visual{position:relative;right:auto;bottom:auto;width:72%;min-width:0;margin:8px 0 0 auto}.project-main-hero{min-height:auto;padding-bottom:18px}}
+@media(max-width:760px){#sec-finanzas{padding-top:20px}.section-head{align-items:flex-start;flex-direction:column;margin-bottom:17px}.section-tags,.section-actions{justify-content:flex-start}.project-side-stack{grid-template-columns:1fr}.fin-grid3{grid-template-columns:1fr}.status-board{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.section-h1{font-size:1.48rem}.project-main-hero{padding:20px 18px}.project-major-grid{grid-template-columns:1fr;gap:10px}.project-major-value{font-size:2.35rem}.inst-visual,.inst-visual.wide{width:100%;max-width:none}.status-board{grid-template-columns:1fr 1fr}.donut-canvas-wrap{width:min(100%,240px);height:215px}}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.3 · TABLAS OPERATIVAS PREMIUM
+   Lectura primero · edición al hacer foco · resúmenes por bloque.
+   ═══════════════════════════════════════════════════════════════ */
+.block-card{padding:0;overflow:hidden;border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.038),rgba(255,255,255,.012))}
+.block-card .data-block-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding:18px 20px 16px;border-bottom:1px solid var(--line-soft);background:linear-gradient(180deg,rgba(255,255,255,.024),rgba(255,255,255,.008))}
+.block-card .data-block-title{display:flex;align-items:center;gap:9px;font-size:.78rem;font-weight:800;letter-spacing:1.05px;text-transform:uppercase;color:rgba(242,241,235,.74)}
+.block-card .data-block-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(250,180,30,.06)}
+.block-card.egreso .data-block-title::before{background:#d6877b;box-shadow:0 0 0 4px rgba(214,135,123,.06)}
+.block-kind{display:inline-flex;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.02);border-radius:999px;padding:4px 8px;font-size:.52rem;letter-spacing:.9px;color:rgba(242,241,235,.35);font-weight:800;margin-left:2px}
+.block-card .data-block-sub{font-size:.58rem;color:rgba(242,241,235,.29);margin-top:7px;line-height:1.45}
+.block-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.block-actions .btn{padding:7px 10px;font-size:.61rem;border-radius:8px}
+.block-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:12px 20px;background:rgba(5,8,9,.14);border-bottom:1px solid var(--line-soft)}
+.block-stat{padding:10px 12px;border:1px solid var(--line-soft);border-radius:12px;background:rgba(255,255,255,.018)}
+.block-stat .bs-label{font-size:.52rem;text-transform:uppercase;letter-spacing:1px;color:rgba(242,241,235,.28);font-weight:800}
+.block-stat .bs-value{font-family:'Bebas Neue',sans-serif;font-size:1.18rem;line-height:1;color:rgba(242,241,235,.76);margin-top:7px}
+.block-stat.gold .bs-value{color:#ddb75d}.block-stat.green .bs-value{color:#9fc8aa}.block-stat.red .bs-value{color:#d6877b}.block-stat.blue .bs-value{color:#97b7c9}
+.block-stat .bs-track{height:3px;margin-top:8px;border-radius:9px;background:rgba(255,255,255,.045);overflow:hidden}.block-stat .bs-track i{display:block;height:100%;width:var(--w);border-radius:9px;background:linear-gradient(90deg,var(--gold),#8ea891)}
+.block-stat.red .bs-track i{background:linear-gradient(90deg,#c87970,#d0a476)}
+.block-edit-hint{display:flex;align-items:center;gap:7px;padding:9px 20px;color:rgba(242,241,235,.24);font-size:.56rem;border-bottom:1px solid var(--line-soft)}
+.block-edit-hint::before{content:'✎';font-size:.67rem;color:rgba(250,180,30,.48)}
+.block-card .twrap{border:0;border-radius:0;background:transparent}
+.block-card table{font-size:.76rem}
+.block-card th{position:static;background:rgba(255,255,255,.018);padding:10px 11px;color:rgba(242,241,235,.31);font-size:.56rem}
+.block-card td{padding:5px 9px;height:49px;border-bottom:1px solid rgba(255,255,255,.035);transition:background .15s}
+.block-card tbody tr{position:relative}
+.block-card tbody tr:hover td{background:rgba(255,255,255,.022)}
+.block-card tbody tr:focus-within td{background:rgba(250,180,30,.026)}
+.row-no{width:34px;text-align:center!important;color:rgba(242,241,235,.20)!important;font-family:'Bebas Neue',sans-serif;font-size:.72rem!important;letter-spacing:.5px}
+.block-card td input,.block-card td select{height:34px;background:transparent;border:1px solid transparent;border-radius:8px;color:rgba(242,241,235,.79);font-size:.76rem;padding:6px 8px;transition:background .14s,border-color .14s,box-shadow .14s}
+.block-card td input:hover,.block-card td select:hover{background:rgba(255,255,255,.028)}
+.block-card td input:focus,.block-card td select:focus{background:#192124;border-color:rgba(250,180,30,.32);box-shadow:0 0 0 3px rgba(250,180,30,.045);color:var(--cream)}
+.block-card td input[type=number]{font-variant-numeric:tabular-nums;font-weight:700;color:rgba(242,241,235,.72)}
+.block-card td select.status-select{font-size:.62rem;font-weight:800;letter-spacing:.35px;text-transform:uppercase;padding-right:28px}
+.block-card td select.status-select.paid{color:#9fc8aa;background:rgba(117,169,138,.045);border-color:rgba(117,169,138,.08)}
+.block-card td select.status-select.pending{color:#ddb75d;background:rgba(250,180,30,.035);border-color:rgba(250,180,30,.07)}
+.row-delete{width:32px;height:32px;padding:0!important;display:inline-grid;place-items:center;border-radius:8px!important;background:transparent!important;border:1px solid transparent!important;color:rgba(222,127,114,.52)!important}
+.row-delete:hover{background:rgba(222,127,114,.07)!important;border-color:rgba(222,127,114,.14)!important;color:#de8e82!important}
+.saldo-pill{display:inline-flex;align-items:center;justify-content:flex-end;min-width:92px;padding:6px 9px;border-radius:999px;font-weight:800;font-size:.68rem;font-variant-numeric:tabular-nums}
+.saldo-pill.pending{background:rgba(222,127,114,.055);color:#d99086;border:1px solid rgba(222,127,114,.09)}
+.saldo-pill.done{background:rgba(117,169,138,.055);color:#9fc8aa;border:1px solid rgba(117,169,138,.09)}
+.block-card tfoot td{height:48px;background:linear-gradient(90deg,rgba(250,180,30,.035),rgba(255,255,255,.009));border-top:1px solid rgba(250,180,30,.10);font-size:.65rem;color:rgba(242,241,235,.52)}
+.block-card.egreso tfoot td{background:linear-gradient(90deg,rgba(214,135,123,.03),rgba(255,255,255,.008));border-top-color:rgba(214,135,123,.09)}
+.block-total-label{font-weight:800;text-transform:uppercase;letter-spacing:.75px;color:rgba(242,241,235,.55)}
+.block-total-value{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--cream)}
+.new-block-bar{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 24px;padding:13px;border:1px dashed rgba(255,255,255,.07);border-radius:14px;background:rgba(255,255,255,.012)}
+.new-block-bar .btn-green{background:rgba(117,169,138,.055);border-color:rgba(117,169,138,.15);color:#9fc8aa}
+@media(max-width:760px){.block-card .data-block-head{flex-direction:column;padding:16px}.block-actions{justify-content:flex-start}.block-summary{grid-template-columns:1fr 1fr 1fr;padding:10px 16px}.block-edit-hint{padding:8px 16px}.block-card th,.block-card td{white-space:nowrap}}
+@media(max-width:520px){.block-summary{grid-template-columns:1fr}.block-stat{display:grid;grid-template-columns:1fr auto;align-items:center}.block-stat .bs-value{margin-top:0}.block-stat .bs-track{grid-column:1/-1}.block-card .data-block-title{font-size:.7rem}}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.3 PRO · SHELL EJECUTIVO / SIDEBAR PREMIUM
+   ═══════════════════════════════════════════════════════════════ */
+#app{grid-template-columns:292px minmax(0,1fr)}
+.header{padding:13px 28px;min-height:76px;background:linear-gradient(90deg,rgba(11,16,18,.96),rgba(16,22,24,.86));border-bottom-color:rgba(255,255,255,.065)}
+.header::after{content:'';position:absolute;left:292px;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,rgba(250,180,30,.18),rgba(255,255,255,.02),transparent)}
+.logo-hdr{height:40px}.hl span{letter-spacing:2.45px;color:rgba(242,241,235,.32)}
+.sync{padding:5px 28px;background:rgba(9,13,15,.78)}
+.nav{width:292px;padding:15px 14px 18px;gap:3px;background:
+  radial-gradient(circle at 22% 4%,rgba(250,180,30,.04),transparent 25%),
+  linear-gradient(180deg,rgba(15,21,23,.94),rgba(11,16,18,.91));border-right-color:rgba(255,255,255,.06)}
+.nav::before{display:none}
+.nav-pro-head{padding:12px 12px 16px;margin-bottom:7px;border-bottom:1px solid var(--line-soft)}
+.nav-pro-brand{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.nav-pro-brand strong{font-family:'Bebas Neue',sans-serif;font-size:1.28rem;letter-spacing:2.2px;color:var(--cream);font-weight:400}
+.nav-pro-badge{font-size:.48rem;font-weight:900;letter-spacing:1.1px;padding:5px 7px;border-radius:999px;border:1px solid rgba(250,180,30,.17);color:#ddb75d;background:rgba(250,180,30,.045)}
+.nav-pro-caption{font-size:.56rem;color:rgba(242,241,235,.27);margin-top:5px;letter-spacing:.7px;line-height:1.45}
+.nav-portfolio-mini{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:12px;padding:10px 11px;border:1px solid var(--line-soft);border-radius:12px;background:rgba(255,255,255,.018)}
+.nav-portfolio-mini span{font-size:.52rem;text-transform:uppercase;letter-spacing:1px;color:rgba(242,241,235,.28);font-weight:800}
+.nav-portfolio-mini b{font-family:'Bebas Neue',sans-serif;font-size:1.12rem;font-weight:400;color:#9fc8aa}
+.nav-section-label{display:flex;align-items:center;justify-content:space-between;padding:15px 10px 7px;font-size:.51rem;font-weight:900;letter-spacing:1.55px;text-transform:uppercase;color:rgba(242,241,235,.22)}
+.nav-section-label em{font-style:normal;display:inline-flex;min-width:22px;height:18px;align-items:center;justify-content:center;border-radius:999px;background:rgba(255,255,255,.035);color:rgba(242,241,235,.32);font-size:.49rem;letter-spacing:0}
+.nav .tab{display:flex;align-items:center;gap:10px;min-height:45px;padding:8px 10px;border-radius:12px;color:rgba(242,241,235,.50);overflow:hidden}
+.nav .tab:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.055)}
+.nav .tab.active{background:linear-gradient(100deg,rgba(250,180,30,.095),rgba(255,255,255,.018));border-color:rgba(250,180,30,.12);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.nav .tab.active::before{left:-1px;top:9px;bottom:9px;width:2px;background:linear-gradient(var(--gold),#8fa68f)}
+.nav-icon{width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;border-radius:9px;border:1px solid var(--line-soft);background:rgba(255,255,255,.018);font-size:.72rem;color:rgba(242,241,235,.45)}
+.nav .tab.active .nav-icon{border-color:rgba(250,180,30,.14);background:rgba(250,180,30,.05);color:#ddb75d}
+.nav-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.nav-copy b{font-size:.72rem;line-height:1.15;color:inherit;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-copy small{font-size:.51rem;font-weight:700;color:rgba(242,241,235,.25);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.1px}
+.nav .tab.active .nav-copy small{color:rgba(242,241,235,.36)}
+.project-code{font-family:'Bebas Neue',sans-serif;width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.022);border:1px solid var(--line-soft);font-size:.74rem;color:rgba(242,241,235,.29);letter-spacing:.5px}
+.project-tab.active .project-code{background:rgba(250,180,30,.06);border-color:rgba(250,180,30,.14);color:#ddb75d}
+.tab-metric{font-family:'Bebas Neue',sans-serif;font-size:.68rem;color:rgba(242,241,235,.30);white-space:nowrap;margin-left:auto}
+.project-tab.active .tab-metric{color:#9fc8aa}
+.nav-major{min-height:49px!important}.nav-major .nav-copy b{font-size:.75rem}.nav-major .nav-copy small{font-size:.52rem}
+.nav .tab.add{margin:8px 0 0;justify-content:center;border-style:solid;border-color:rgba(250,180,30,.12);background:rgba(250,180,30,.035);color:#ddb75d;min-height:42px}
+.nav .tab.add:hover{background:rgba(250,180,30,.07);border-color:rgba(250,180,30,.20)}
+.nav-divider{height:1px;background:var(--line-soft);margin:10px 9px 2px}
+.nav-pro-foot{margin-top:auto;padding:14px 10px 4px;border-top:1px solid var(--line-soft);display:flex;align-items:center;gap:9px;color:rgba(242,241,235,.24);font-size:.53rem;line-height:1.35}
+.nav-pro-foot::before{content:'';width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#75a98a;box-shadow:0 0 0 4px rgba(117,169,138,.06)}
+#secs{background:linear-gradient(180deg,rgba(255,255,255,.006),transparent 18%)}
+.sec{max-width:1700px;padding-left:clamp(24px,3.2vw,54px);padding-right:clamp(24px,3.2vw,54px)}
+.section-head,.summary-head{padding-bottom:2px}
+.project-main-hero,.profit-hero{box-shadow:0 28px 70px rgba(0,0,0,.24),0 1px 0 rgba(255,255,255,.025) inset}
+.portfolio-card,.analysis-card,.hero-side-card,.metric-strip-card{box-shadow:0 14px 34px rgba(0,0,0,.10),0 1px 0 rgba(255,255,255,.02) inset}
+@media(max-width:1180px){#app{grid-template-columns:264px minmax(0,1fr)}.nav{width:264px}.header::after{left:264px}.tab-metric{display:none}}
+@media(max-width:860px){#app{display:block!important}.header::after{left:0}.nav{width:auto;height:auto;padding:8px 12px;gap:5px}.nav-pro-head,.nav-section-label,.nav-divider,.nav-pro-foot{display:none}.nav .tab{min-width:max-content;width:auto;min-height:40px;padding:7px 10px}.nav-copy small,.tab-metric{display:none}.nav-copy b{font-size:.68rem}.nav-icon,.project-code{width:25px;height:25px;flex-basis:25px}.nav .tab.add{margin:0}.sec{padding-left:14px;padding-right:14px}}
+@media(max-width:520px){.nav-icon,.project-code{display:none}.nav .tab{gap:5px}.nav-copy b{max-width:135px}}
+
 </style>
 </head>
 <body>
@@ -744,6 +930,42 @@ const S = n => 'S/ ' + Number(n||0).toLocaleString('es-PE',{minimumFractionDigit
 const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid = () => Math.random().toString(36).slice(2,10);
+const S0 = n => 'S/ ' + Number(n||0).toLocaleString('es-PE',{maximumFractionDigits:0});
+const moneyK = n => {
+  const a = Math.abs(Number(n||0));
+  if(a >= 1000000) return 'S/ ' + (Number(n)/1000000).toLocaleString('es-PE',{maximumFractionDigits:2}) + ' M';
+  if(a >= 1000) return 'S/ ' + (Number(n)/1000).toLocaleString('es-PE',{maximumFractionDigits:0}) + ' K';
+  return S0(n);
+};
+const shortProjectName = s => String(s||'').replace(/(ELABORACI[ÓO]N|SUPERVISI[ÓO]N|EXPEDIENTE|T[ÉE]CNICO|PROYECTO|DE|DEL|LA|EL)/gi,'').replace(/\s+/g,' ').trim();
+function institutionalVisual(tipo='proyecto'){
+  const accent = tipo==='supervision' ? '#8fb1bc' : (tipo==='elaboracion' ? '#d9b56a' : '#9fc3ad');
+  const accent2 = tipo==='supervision' ? '#6f8992' : (tipo==='elaboracion' ? '#8ba08b' : '#d9b56a');
+  return `<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="vinGradA" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="${accent}" stop-opacity=".95"/><stop offset="100%" stop-color="#506166" stop-opacity=".2"/></linearGradient>
+      <linearGradient id="vinGradB" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#253034" stop-opacity=".0"/><stop offset="100%" stop-color="#ffffff" stop-opacity=".04"/></linearGradient>
+    </defs>
+    <g opacity=".22" stroke="rgba(255,255,255,.25)">
+      <path d="M20 180 H390" stroke="rgba(255,255,255,.2)"/>
+      <path d="M38 44 V190 M88 30 V190 M138 20 V190 M188 32 V190 M238 44 V190 M288 30 V190 M338 20 V190" stroke="rgba(255,255,255,.08)"/>
+    </g>
+    <g transform="translate(80,40)">
+      <path d="M48 124 L148 86 L246 124 L147 162 Z" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.06)"/>
+      <path d="M48 124 L48 63 L147 25 L147 86 Z" fill="url(#vinGradB)" stroke="rgba(255,255,255,.06)"/>
+      <path d="M147 86 L147 25 L246 63 L246 124 Z" fill="rgba(255,255,255,.025)" stroke="rgba(255,255,255,.06)"/>
+      <path d="M78 112 L78 76 L110 63 L110 99 Z" fill="url(#vinGradA)" opacity=".92"/>
+      <path d="M120 96 L120 57 L154 44 L154 84 Z" fill="${accent2}" opacity=".72"/>
+      <path d="M163 112 L163 70 L200 56 L200 98 Z" fill="url(#vinGradA)" opacity=".86"/>
+      <path d="M208 99 L208 84 L228 76 L228 91 Z" fill="${accent}" opacity=".75"/>
+      <path d="M147 25 L184 40 L184 139 L147 162 Z" fill="rgba(255,255,255,.035)"/>
+      <circle cx="248" cy="28" r="9" fill="none" stroke="${accent}" opacity=".45"/>
+      <circle cx="248" cy="28" r="18" fill="none" stroke="${accent}" opacity=".18"/>
+      <path d="M246 29 C292 26 315 40 336 65" fill="none" stroke="${accent}" stroke-width="1.2" opacity=".45"/>
+      <path d="M18 142 C48 126 79 126 115 138 S186 160 242 150" fill="none" stroke="#84a591" stroke-width="1.1" opacity=".32"/>
+    </g>
+  </svg>`;
+}
 
 function killChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
 const tc = 'rgba(242,241,235,0.42)', gc = 'rgba(255,255,255,0.055)';
@@ -844,14 +1066,34 @@ async function guardar(p){
 
 /* ═══════════ RENDER GENERAL ═══════════ */
 function render(){
-  // NAV
+  // NAV · UI 2.3 PRO
   const nav = document.getElementById('nav');
-  let tabs = `<div class="tab ${activeTab==='resumen'?'active':''}" onclick="go('resumen')">Resumen General</div>`;
-  proyectos.forEach(p=>{
-    tabs += `<div class="tab ${activeTab===p.id?'active':''}" onclick="go('${p.id}')">${esc(p.nombre)}</div>`;
+  const portfolioGan = proyectos.reduce((s,p)=>s+calc(p).ganancia,0);
+  let tabs = `<div class="nav-pro-head">
+    <div class="nav-pro-brand"><strong>VINARQ</strong><span class="nav-pro-badge">UI PRO</span></div>
+    <div class="nav-pro-caption">Gestión económica y control ejecutivo de proyectos.</div>
+    <div class="nav-portfolio-mini"><span>Ganancia del portafolio</span><b>${moneyK(portfolioGan)}</b></div>
+  </div>`;
+  tabs += `<div class="nav-section-label"><span>Visión general</span></div>`;
+  tabs += `<div class="tab nav-major ${activeTab==='resumen'?'active':''}" onclick="go('resumen')">
+    <span class="nav-icon">◫</span><span class="nav-copy"><b>Resumen General</b><small>Portafolio · rentabilidad · caja</small></span>
+  </div>`;
+  tabs += `<div class="nav-section-label"><span>Proyectos</span><em>${proyectos.length}</em></div>`;
+  proyectos.forEach((p,i)=>{
+    const c=calc(p);
+    const tipo=p.tipo==='supervision'?'Supervisión':'Elaboración';
+    tabs += `<div class="tab project-tab ${activeTab===p.id?'active':''}" onclick="go('${p.id}')" title="${esc(p.nombre)}">
+      <span class="project-code">${String(i+1).padStart(2,'0')}</span>
+      <span class="nav-copy"><b>${esc(shortProjectName(p.nombre)||p.nombre)}</b><small>${tipo} · margen ${c.margen.toFixed(1)}%</small></span>
+      <span class="tab-metric">${moneyK(c.ganancia)}</span>
+    </div>`;
   });
-  tabs += `<div class="tab ${activeTab==='finanzas'?'active':''}" onclick="go('finanzas')">Finanzas Consolidadas</div>`;
-  tabs += `<div class="tab add" onclick="nuevoProyecto()">+ Nuevo Proyecto</div>`;
+  tabs += `<div class="nav-divider"></div><div class="nav-section-label"><span>Gestión</span></div>`;
+  tabs += `<div class="tab nav-major ${activeTab==='finanzas'?'active':''}" onclick="go('finanzas')">
+    <span class="nav-icon">⌁</span><span class="nav-copy"><b>Finanzas Consolidadas</b><small>Utilidad · egresos · cobranza</small></span>
+  </div>`;
+  tabs += `<div class="tab add" onclick="nuevoProyecto()"><span>＋</span><span>Nuevo Proyecto</span></div>`;
+  tabs += `<div class="nav-pro-foot">Firebase en tiempo real · los cambios de las tablas se guardan automáticamente.</div>`;
   nav.innerHTML = tabs;
 
   // SECCIONES
@@ -1073,69 +1315,152 @@ function renderProyecto(p){
   const el = document.getElementById('sec-'+p.id);
   if(!el) return;
   const c = calc(p);
+  const cobroPct = c.ingresoTotal>0 ? Math.max(0,Math.min(100,c.cobrado/c.ingresoTotal*100)) : 0;
+  const porCobrarPct = c.ingresoTotal>0 ? Math.max(0,Math.min(100,c.porCobrar/c.ingresoTotal*100)) : 0;
+  const pagadoPct = c.egresoTotal>0 ? Math.max(0,Math.min(100,c.pagado/c.egresoTotal*100)) : 0;
+  const porPagarPct = c.egresoTotal>0 ? Math.max(0,Math.min(100,c.porPagar/c.egresoTotal*100)) : 0;
+  const idx = String(p.orden || (proyectos.findIndex(x=>x.id===p.id)+1)).padStart(2,'0');
+  const typeLabel = p.tipo==='supervision' ? 'Supervisión' : 'Elaboración';
+  const footState = c.caja>=0 ? 'El flujo cobrado cubre lo pagado.' : 'Se requiere mayor cobranza para equilibrar la caja.';
 
   el.innerHTML = `
-    <div class="sec-title">
-      ${esc(p.nombre)}
-      <span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Supervisión':'Elaboración'}</span>
-      <button class="btn btn-ghost btn-sm" onclick="editarProyecto('${p.id}')">Editar nombre</button>
-      <button class="btn btn-danger btn-sm" onclick="borrarProyecto('${p.id}')">Eliminar proyecto</button>
-    </div>
-
-    <div class="kpis">
-      ${kpi('Monto del Contrato', S(c.ingresoTotal), 'a', 'Total a cobrar')}
-      ${kpi('Egreso Total', S(c.egresoTotal), 'r', 'Todo lo que se paga')}
-      ${kpi('Ganancia', S(c.ganancia), c.ganancia>=0?'g':'r', `Margen ${c.margen.toFixed(1)}%`)}
-      ${kpi('Cobrado', S(c.cobrado), 'g', '')}
-      ${kpi('Por Cobrar', S(c.porCobrar), 'a', '')}
-      ${kpi('Pagado', S(c.pagado), 'b', '')}
-      ${kpi('Por Pagar', S(c.porPagar), 'r', '')}
-      ${kpi('Caja del Proyecto', S(c.caja), c.caja>=0?'g':'r', 'Cobrado − Pagado')}
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="card-title"><span class="lbl">Avance Económico</span></div>
-        <div class="pw">
-          <div class="pl"><span>Cobrado del contrato</span><span>${S(c.cobrado)} / ${S(c.ingresoTotal)}</span></div>
-          <div class="pb"><div class="pf" style="width:${c.ingresoTotal>0?Math.min(100,c.cobrado/c.ingresoTotal*100):0}%;background:linear-gradient(90deg,#C08A0F,#FAB41E)"></div></div>
-        </div>
-        <div class="pw">
-          <div class="pl"><span>Pagado del egreso</span><span>${S(c.pagado)} / ${S(c.egresoTotal)}</span></div>
-          <div class="pb"><div class="pf" style="width:${c.egresoTotal>0?Math.min(100,c.pagado/c.egresoTotal*100):0}%;background:linear-gradient(90deg,#C0392B,#E74C3C)"></div></div>
-        </div>
-        <div class="sep"></div>
-        <div style="text-align:center">
-          <div style="font-size:0.66rem;color:rgba(245,241,232,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Margen del proyecto</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:${c.margen>=30?'var(--green)':c.margen>=10?'var(--gold-light)':'var(--red)'}">${c.margen.toFixed(1)}%</div>
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">VINARQ · PANEL DE PROYECTO ${idx}</div>
+        <div class="section-h1">${esc(p.nombre)}</div>
+        <div class="section-sub">Lectura ejecutiva del proyecto con jerarquía en contrato, utilidad, avance de cobranza y compromisos. Luego, debajo, quedan los bloques editables para operar sin perder elegancia visual.</div>
+      </div>
+      <div class="section-tags">
+        <div class="section-tag good">${esc(typeLabel)}</div>
+        <div class="section-tag"><strong>${S(c.caja)}</strong> caja actual</div>
+        <div class="section-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editarProyecto('${p.id}')">Editar nombre</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarProyecto('${p.id}')">Eliminar proyecto</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="lbl">Composición del Contrato</span></div>
-        <div class="chart-box"><canvas id="ch-${p.id}"></canvas></div>
+    </div>
+
+    <div class="project-hero-grid">
+      <section class="project-main-hero">
+        <div class="hero-topline"><span class="hero-kicker">Lectura contractual y económica</span><span class="hero-index">VIN / ${idx}</span></div>
+        <div class="project-major-grid">
+          <div class="project-major-tile contract">
+            <div class="project-major-label">Monto contratado</div>
+            <div class="project-major-value">${S(c.ingresoTotal)}</div>
+            <div class="project-major-note"><strong>${cobroPct.toFixed(1)}%</strong> ya cobrado · pendiente por ingresar <strong>${S(c.porCobrar)}</strong>.</div>
+          </div>
+          <div class="project-major-tile gain">
+            <div class="project-major-label">Ganancia proyectada</div>
+            <div class="project-major-value ${c.ganancia<0?'neg':''}">${S(c.ganancia)}</div>
+            <div class="project-major-note">Margen actual <strong>${c.margen.toFixed(1)}%</strong> sobre el contrato. ${c.ganancia>=0?'Utilidad favorable del proyecto.':'La utilidad es negativa; revisar costos y cobros.'}</div>
+          </div>
+        </div>
+        <div class="inst-visual">${institutionalVisual(p.tipo)}</div>
+        <div class="project-hero-foot"><span><i></i>Prioridad visual en contrato y utilidad</span><span><i></i>Imagen institucional</span><span><i></i>${esc(footState)}</span></div>
+      </section>
+
+      <aside class="project-side-stack">
+        <div class="hero-side-card tight">
+          <div class="side-label">Estado resumido</div>
+          <div class="status-board">
+            <div class="status-box gold"><span>Por cobrar</span><b>${moneyK(c.porCobrar)}</b></div>
+            <div class="status-box red"><span>Por pagar</span><b>${moneyK(c.porPagar)}</b></div>
+            <div class="status-box blue"><span>Pagado</span><b>${moneyK(c.pagado)}</b></div>
+            <div class="status-box green"><span>Cobrado</span><b>${moneyK(c.cobrado)}</b></div>
+          </div>
+        </div>
+        <div class="hero-side-card tight">
+          <div class="side-label">Ritmo económico</div>
+          <div class="meter-row">
+            <div class="meter-head"><span>Cobro ejecutado</span><b>${cobroPct.toFixed(1)}%</b></div>
+            <div class="meter-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-head"><span>Pago ejecutado</span><b>${pagadoPct.toFixed(1)}%</b></div>
+            <div class="meter-line red"><i style="--w:${pagadoPct.toFixed(1)}%"></i></div>
+          </div>
+          <div class="cash-note" style="margin-top:14px"><strong>Lectura rápida.</strong><br>${cobroPct>=pagadoPct?'La cobranza va por delante del desembolso.':'El desembolso va más rápido que la cobranza.'}</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric-strip-card emphasis">
+        <div class="metric-top"><span class="metric-label">Cobrado</span><span class="metric-pct">${cobroPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(c.cobrado)}</div>
+        <div class="metric-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div>
+        <div class="metric-foot">Ingreso efectivamente recibido del cliente</div>
       </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Pendiente de cobro</span><span class="metric-pct">${porCobrarPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(c.porCobrar)}</div>
+        <div class="metric-line"><i style="--w:${porCobrarPct.toFixed(1)}%"></i></div>
+        <div class="metric-foot">Flujo aún pendiente por entrar</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Pagado</span><span class="metric-pct">${pagadoPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(c.pagado)}</div>
+        <div class="metric-line red"><i style="--w:${pagadoPct.toFixed(1)}%"></i></div>
+        <div class="metric-foot">Monto ya desembolsado a terceros</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Pendiente de pago</span><span class="metric-pct">${porPagarPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(c.porPagar)}</div>
+        <div class="metric-line red"><i style="--w:${porPagarPct.toFixed(1)}%"></i></div>
+        <div class="metric-foot">Compromisos por atender del proyecto</div>
+      </div>
+    </div>
+
+    <div class="analysis-grid project-dashboard-grid">
+      <section class="analysis-card soft">
+        <div class="analysis-head"><div><div class="analysis-title">Avance económico del proyecto</div><div class="analysis-copy">Lectura comparada entre cobranza y desembolso para identificar equilibrio financiero del expediente.</div></div></div>
+        <div class="meter-row">
+          <div class="meter-head"><span>Cobrado del contrato</span><b>${S(c.cobrado)} / ${S(c.ingresoTotal)}</b></div>
+          <div class="meter-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-head"><span>Pagado del egreso</span><b>${S(c.pagado)} / ${S(c.egresoTotal)}</b></div>
+          <div class="meter-line red"><i style="--w:${pagadoPct.toFixed(1)}%"></i></div>
+        </div>
+        <div class="center-stat">
+          <div class="label">Margen del proyecto</div>
+          <div class="value ${c.margen>=30?'good':c.margen>=10?'warn':'bad'}">${c.margen.toFixed(1)}%</div>
+          <div class="analysis-copy" style="margin-top:6px">${c.margen>=30?'Rentabilidad fuerte y sana.':c.margen>=10?'Rentabilidad aceptable, pero aún sensible.':'Rentabilidad baja; revisar estructura económica.'}</div>
+        </div>
+      </section>
+
+      <section class="analysis-card soft">
+        <div class="analysis-head"><div><div class="analysis-title">Composición del contrato</div><div class="analysis-copy">Participación de los bloques de egresos y de la utilidad dentro del monto contratado.</div></div></div>
+        <div class="donut-editorial">
+          <div class="donut-canvas-wrap compact">
+            <canvas id="ch-${p.id}"></canvas>
+            <div class="chart-center-copy"><b>${c.margen.toFixed(1)}%</b><span>margen</span></div>
+          </div>
+          <div class="legend-note">Los egresos se muestran en tonos sobrios y la utilidad se reserva como acento positivo.</div>
+        </div>
+      </section>
     </div>
 
     ${(p.cobros||[]).map((g,gi)=>bloqueCobro(p,g,gi)).join('')}
     ${(p.egresos||[]).map((g,gi)=>bloqueEgreso(p,g,gi)).join('')}
 
-    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px">
+    <div class="new-block-bar">
       <button class="btn btn-green btn-sm" onclick="addGrupo('${p.id}','cobros')">+ Nuevo bloque de cobros</button>
       <button class="btn btn-green btn-sm" onclick="addGrupo('${p.id}','egresos')">+ Nuevo bloque de egresos</button>
     </div>`;
 
-  // Gráfico composición
   killChart('ch-'+p.id);
   const cv = document.getElementById('ch-'+p.id);
   const labs=[], vals=[];
   (p.egresos||[]).forEach(g=>{ const t=(g.items||[]).reduce((s,i)=>s+num(i.monto),0); if(t>0){labs.push(g.titulo); vals.push(t);} });
   if(c.ganancia>0){ labs.push('Ganancia'); vals.push(c.ganancia); }
-  const colores = ['#E74C3C','#E67E22','#9B59B6','#3498DB','#1ABC9C','#95A5A6','#2ECC71'];
+  const colores = ['rgba(214,135,123,.88)','rgba(221,183,93,.8)','rgba(142,162,170,.75)','rgba(123,149,138,.74)','rgba(165,164,181,.68)','rgba(122,132,137,.7)','rgba(157,199,168,.92)'];
   if(cv && vals.length) charts['ch-'+p.id] = new Chart(cv,{type:'doughnut',
     data:{labels:labs,datasets:[{data:vals,
-      backgroundColor:labs.map((l,i)=> l==='Ganancia' ? '#2ECC71' : colores[i%colores.length]),
-      borderWidth:2,borderColor:'#141414'}]},
-    options:{...COPTS,cutout:'56%',plugins:{...COPTS.plugins,
+      backgroundColor:labs.map((l,i)=> l==='Ganancia' ? 'rgba(157,199,168,.92)' : colores[i%colores.length]),
+      borderWidth:2,borderColor:'#14191b',hoverOffset:4}]},
+    options:{...COPTS,cutout:'63%',plugins:{...COPTS.plugins,
+      legend:{position:'top',labels:{color:'rgba(245,241,232,0.66)',font:{size:10},boxWidth:14,usePointStyle:true,pointStyle:'circle'}},
       tooltip:{callbacks:{label:x=>x.label+': '+S(x.raw)}}}}});
 }
 
@@ -1144,34 +1469,46 @@ function bloqueCobro(p,g,gi){
   const items = g.items||[];
   const total = items.reduce((s,i)=>s+num(i.monto),0);
   const pagado = items.filter(i=>i.estado==='PAGADO').reduce((s,i)=>s+num(i.monto),0);
+  const pendiente = Math.max(total-pagado,0);
+  const pct = total>0 ? Math.min(100,pagado/total*100) : 0;
   return `
-  <div class="card">
-    <div class="card-title">
-      <span class="lbl">▸ ${esc(g.titulo)} <span style="color:rgba(245,241,232,0.4);font-size:0.75rem;font-family:Nunito">(cobros)</span></span>
-      <span style="display:flex;gap:7px;flex-wrap:wrap">
+  <div class="portfolio-card block-card cobro">
+    <div class="data-block-head">
+      <div>
+        <div class="data-block-title">${esc(g.titulo)} <span class="block-kind">Cobros</span></div>
+        <div class="data-block-sub">Programación de pagos del cliente · ${items.length} ${items.length===1?'registro':'registros'}</div>
+      </div>
+      <div class="block-actions">
         <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','cobros',${gi})">+ Fila</button>
         <button class="btn btn-ghost btn-sm" onclick="renombrarGrupo('${p.id}','cobros',${gi})">Renombrar</button>
         <button class="btn btn-danger btn-sm" onclick="delGrupo('${p.id}','cobros',${gi})">Borrar bloque</button>
-      </span>
+      </div>
     </div>
+    <div class="block-summary">
+      <div class="block-stat gold"><div class="bs-label">Total programado</div><div class="bs-value">${S(total)}</div><div class="bs-track"><i style="--w:100%"></i></div></div>
+      <div class="block-stat green"><div class="bs-label">Cobrado</div><div class="bs-value">${S(pagado)}</div><div class="bs-track"><i style="--w:${pct.toFixed(1)}%"></i></div></div>
+      <div class="block-stat red"><div class="bs-label">Pendiente</div><div class="bs-value">${S(pendiente)}</div><div class="bs-track"><i style="--w:${(100-pct).toFixed(1)}%"></i></div></div>
+    </div>
+    <div class="block-edit-hint">Haz clic en una celda para editar. Los cambios se guardan automáticamente en Firebase.</div>
     <div class="twrap">
       <table>
-        <thead><tr><th style="width:45%">Descripción</th><th class="num" style="width:20%">Monto (S/)</th><th style="width:22%">Estado</th><th style="width:13%"></th></tr></thead>
+        <thead><tr><th class="row-no">#</th><th style="width:45%">Descripción</th><th class="num" style="width:20%">Monto (S/)</th><th style="width:22%">Estado</th><th style="width:54px"></th></tr></thead>
         <tbody>
           ${items.map((it,ii)=>`<tr>
+            <td class="row-no">${String(ii+1).padStart(2,'0')}</td>
             <td><input value="${esc(it.desc)}" onchange="setItem('${p.id}','cobros',${gi},${ii},'desc',this.value)"></td>
             <td><input type="number" step="0.01" value="${num(it.monto)}" onchange="setItem('${p.id}','cobros',${gi},${ii},'monto',this.value)"></td>
-            <td><select onchange="setItem('${p.id}','cobros',${gi},${ii},'estado',this.value)">
+            <td><select class="status-select ${it.estado==='PAGADO'?'paid':'pending'}" onchange="setItem('${p.id}','cobros',${gi},${ii},'estado',this.value)">
                 <option value="SIN PAGAR" ${it.estado!=='PAGADO'?'selected':''}>SIN PAGAR</option>
                 <option value="PAGADO" ${it.estado==='PAGADO'?'selected':''}>PAGADO</option>
               </select></td>
-            <td><button class="btn btn-danger btn-sm" onclick="delItem('${p.id}','cobros',${gi},${ii})">✕</button></td>
-          </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:rgba(245,241,232,0.3);padding:16px">Sin filas — usa "+ Fila"</td></tr>`}
+            <td style="text-align:center"><button class="btn btn-danger btn-sm row-delete" title="Eliminar fila" onclick="delItem('${p.id}','cobros',${gi},${ii})">✕</button></td>
+          </tr>`).join('') || `<tr><td colspan="5" style="text-align:center;color:rgba(245,241,232,0.3);padding:22px">Sin filas — usa "+ Fila" para comenzar</td></tr>`}
         </tbody>
         <tfoot><tr>
-          <td>TOTAL · cobrado ${S(pagado)}</td>
-          <td class="num">${S(total)}</td>
-          <td colspan="2">${total>0?(pagado/total*100).toFixed(0):0}% cobrado</td>
+          <td></td><td class="block-total-label">Total del bloque</td>
+          <td class="num block-total-value">${S(total)}</td>
+          <td colspan="2">${pct.toFixed(0)}% cobrado · ${S(pendiente)} pendiente</td>
         </tr></tfoot>
       </table>
     </div>
@@ -1181,50 +1518,62 @@ function bloqueCobro(p,g,gi){
 /* ── Bloque de EGRESOS (lo que pagamos) ── */
 function bloqueEgreso(p,g,gi){
   const items = g.items||[];
-  const cols = g.columnas || 'full';   // 'full' = con adelantos | 'simple' = solo monto
+  const cols = g.columnas || 'full';
   const tM = items.reduce((s,i)=>s+num(i.monto),0);
   const tA1 = items.reduce((s,i)=>s+num(i.adelanto1),0);
   const tA2 = items.reduce((s,i)=>s+num(i.adelanto2),0);
+  const tPag = items.reduce((s,i)=>s+Math.min(num(i.monto),num(i.adelanto1)+num(i.adelanto2)),0);
   const tS  = items.reduce((s,i)=>s+Math.max(num(i.monto)-num(i.adelanto1)-num(i.adelanto2),0),0);
   const full = cols === 'full';
+  const pct = tM>0 ? Math.min(100,tPag/tM*100) : 0;
 
   return `
-  <div class="card">
-    <div class="card-title">
-      <span class="lbl">▸ ${esc(g.titulo)} <span style="color:rgba(245,241,232,0.4);font-size:0.75rem;font-family:Nunito">(egresos)</span></span>
-      <span style="display:flex;gap:7px;flex-wrap:wrap">
+  <div class="portfolio-card block-card egreso">
+    <div class="data-block-head">
+      <div>
+        <div class="data-block-title">${esc(g.titulo)} <span class="block-kind">Egresos</span></div>
+        <div class="data-block-sub">Compromisos y pagos del proyecto · ${items.length} ${items.length===1?'registro':'registros'} · ${full?'adelantos visibles':'vista simplificada'}</div>
+      </div>
+      <div class="block-actions">
         <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','egresos',${gi})">+ Fila</button>
         <button class="btn btn-ghost btn-sm" onclick="toggleCols('${p.id}',${gi})">${full?'Ocultar adelantos':'Mostrar adelantos'}</button>
         <button class="btn btn-ghost btn-sm" onclick="renombrarGrupo('${p.id}','egresos',${gi})">Renombrar</button>
         <button class="btn btn-danger btn-sm" onclick="delGrupo('${p.id}','egresos',${gi})">Borrar bloque</button>
-      </span>
+      </div>
     </div>
+    <div class="block-summary">
+      <div class="block-stat red"><div class="bs-label">Comprometido</div><div class="bs-value">${S(tM)}</div><div class="bs-track"><i style="--w:100%"></i></div></div>
+      <div class="block-stat blue"><div class="bs-label">Pagado</div><div class="bs-value">${S(tPag)}</div><div class="bs-track"><i style="--w:${pct.toFixed(1)}%"></i></div></div>
+      <div class="block-stat gold"><div class="bs-label">Saldo pendiente</div><div class="bs-value">${S(tS)}</div><div class="bs-track"><i style="--w:${(100-pct).toFixed(1)}%"></i></div></div>
+    </div>
+    <div class="block-edit-hint">Edita directamente especialidad, responsable, monto y adelantos. El saldo se recalcula automáticamente.</div>
     <div class="twrap">
       <table>
         <thead><tr>
-          <th>Especialidad / Concepto</th><th>Nombre / Empresa</th>
+          <th class="row-no">#</th><th>Especialidad / Concepto</th><th>Nombre / Empresa</th>
           <th class="num">Monto</th>
           ${full?'<th class="num">Adelanto 1</th><th class="num">Adelanto 2</th><th class="num">Saldo</th>':''}
-          <th></th>
+          <th style="width:54px"></th>
         </tr></thead>
         <tbody>
           ${items.map((it,ii)=>{
             const saldo = Math.max(num(it.monto)-num(it.adelanto1)-num(it.adelanto2),0);
             return `<tr>
+              <td class="row-no">${String(ii+1).padStart(2,'0')}</td>
               <td><input value="${esc(it.especialidad)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'especialidad',this.value)"></td>
               <td><input value="${esc(it.nombre)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'nombre',this.value)"></td>
               <td><input type="number" step="0.01" value="${num(it.monto)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'monto',this.value)"></td>
               ${full?`
               <td><input type="number" step="0.01" value="${num(it.adelanto1)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto1',this.value)"></td>
               <td><input type="number" step="0.01" value="${num(it.adelanto2)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto2',this.value)"></td>
-              <td class="num" style="color:${saldo>0?'var(--red)':'var(--green)'};font-weight:700">${S(saldo)}</td>`:''}
-              <td><button class="btn btn-danger btn-sm" onclick="delItem('${p.id}','egresos',${gi},${ii})">✕</button></td>
-            </tr>`;}).join('') || `<tr><td colspan="${full?7:4}" style="text-align:center;color:rgba(245,241,232,0.3);padding:16px">Sin filas — usa "+ Fila"</td></tr>`}
+              <td class="num"><span class="saldo-pill ${saldo>0?'pending':'done'}">${S(saldo)}</span></td>`:''}
+              <td style="text-align:center"><button class="btn btn-danger btn-sm row-delete" title="Eliminar fila" onclick="delItem('${p.id}','egresos',${gi},${ii})">✕</button></td>
+            </tr>`;}).join('') || `<tr><td colspan="${full?8:5}" style="text-align:center;color:rgba(245,241,235,0.3);padding:22px">Sin filas — usa "+ Fila" para comenzar</td></tr>`}
         </tbody>
         <tfoot><tr>
-          <td colspan="2">TOTAL</td>
-          <td class="num">${S(tM)}</td>
-          ${full?`<td class="num">${S(tA1)}</td><td class="num">${S(tA2)}</td><td class="num">${S(tS)}</td>`:''}
+          <td></td><td colspan="2" class="block-total-label">Total del bloque</td>
+          <td class="num block-total-value">${S(tM)}</td>
+          ${full?`<td class="num">${S(tA1)}</td><td class="num">${S(tA2)}</td><td class="num block-total-value">${S(tS)}</td>`:''}
           <td></td>
         </tr></tfoot>
       </table>
@@ -1314,87 +1663,150 @@ window.nuevoProyecto = async function(){
 function renderFinanzas(){
   const el = document.getElementById('sec-finanzas');
   if(!el) return;
-  const rows = proyectos.map(p=>({p, c:calc(p)}));
-  const T = rows.reduce((a,{c})=>({
-    ing:a.ing+c.ingresoTotal, egr:a.egr+c.egresoTotal, gan:a.gan+c.ganancia,
-    cob:a.cob+c.cobrado, pcob:a.pcob+c.porCobrar, pag:a.pag+c.pagado, ppag:a.ppag+c.porPagar
-  }),{ing:0,egr:0,gan:0,cob:0,pcob:0,pag:0,ppag:0});
-  const margen = T.ing>0 ? (T.gan/T.ing*100) : 0;
 
-  // Ganancia por tipo
+  const rows = proyectos.map(p=>({p,c:calc(p)}));
+  const T = {ing:0,egr:0,gan:0,cob:0,pcob:0,pag:0,ppag:0};
+  rows.forEach(({c})=>{ T.ing+=c.ingresoTotal; T.egr+=c.egresoTotal; T.gan+=c.ganancia; T.cob+=c.cobrado; T.pcob+=c.porCobrar; T.pag+=c.pagado; T.ppag+=c.porPagar; });
+  const margen = T.ing>0 ? (T.gan/T.ing*100) : 0;
+  const cobroPct = T.ing>0 ? Math.max(0,Math.min(100,T.cob/T.ing*100)) : 0;
+  const porCobroPct = T.ing>0 ? Math.max(0,Math.min(100,T.pcob/T.ing*100)) : 0;
+  const pagoPct = T.egr>0 ? Math.max(0,Math.min(100,T.pag/T.egr*100)) : 0;
+  const porPagoPct = T.egr>0 ? Math.max(0,Math.min(100,T.ppag/T.egr*100)) : 0;
   const sup = rows.filter(r=>r.p.tipo==='supervision').reduce((s,r)=>s+r.c.ganancia,0);
   const ela = rows.filter(r=>r.p.tipo==='elaboracion').reduce((s,r)=>s+r.c.ganancia,0);
+  const posGan = Math.max(1, rows.reduce((s,r)=>s+Math.max(0,r.c.ganancia),0));
 
-  // Egresos por categoría (títulos de bloques)
   const porCat = {};
   proyectos.forEach(p=>(p.egresos||[]).forEach(g=>{
     const t=(g.items||[]).reduce((s,i)=>s+num(i.monto),0);
     if(t>0) porCat[g.titulo]=(porCat[g.titulo]||0)+t;
   }));
   const catKeys = Object.keys(porCat).sort((a,b)=>porCat[b]-porCat[a]);
+  const best=[...rows].sort((a,b)=>b.c.ganancia-a.c.ganancia)[0];
+  const pendingItems=[];
+  proyectos.forEach(p=>(p.cobros||[]).forEach(g=>(g.items||[]).forEach(it=>{
+    if(it.estado!=='PAGADO' && num(it.monto)>0) pendingItems.push({proyecto:p.nombre,bloque:g.titulo,desc:it.desc,monto:num(it.monto)});
+  })));
+  pendingItems.sort((a,b)=>b.monto-a.monto);
 
   el.innerHTML = `
-    <div class="sec-title">Finanzas Consolidadas</div>
-
-    <div class="kpis">
-      ${kpi('Ingreso Total Contratado', S(T.ing), 'a', `${proyectos.length} proyectos`)}
-      ${kpi('Egreso Total', S(T.egr), 'r', '')}
-      ${kpi('GANANCIA TOTAL', S(T.gan), T.gan>=0?'g':'r', `Margen ${margen.toFixed(1)}%`)}
-      ${kpi('Ya Cobrado', S(T.cob), 'g', T.ing>0?`${(T.cob/T.ing*100).toFixed(1)}% del contrato`:'')}
-      ${kpi('Pendiente de Cobro', S(T.pcob), 'a', '')}
-      ${kpi('Ya Pagado', S(T.pag), 'b', '')}
-      ${kpi('Pendiente de Pago', S(T.ppag), 'r', '')}
-      ${kpi('Caja Neta Actual', S(T.cob-T.pag), (T.cob-T.pag)>=0?'g':'r', 'Cobrado − Pagado')}
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="card-title"><span class="lbl">Ganancia por Proyecto</span></div>
-        <div class="chart-box" style="height:290px"><canvas id="chFinGan"></canvas></div>
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">VINARQ · VISIÓN CONSOLIDADA DEL PORTAFOLIO</div>
+        <div class="section-h1">Finanzas Consolidadas</div>
+        <div class="section-sub">Una lectura integral del desempeño económico de todos los proyectos: utilidad total, caja, cobranza, compromisos, composición de costos y detalle financiero consolidado.</div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="lbl">Egresos por Categoría (todos los proyectos)</span></div>
-        <div class="chart-box" style="height:290px"><canvas id="chFinCat"></canvas></div>
+      <div class="section-tags">
+        <div class="section-tag good"><strong>${proyectos.length}</strong> proyectos activos</div>
+        <div class="section-tag"><strong>${moneyK(T.cob-T.pag)}</strong> caja neta</div>
+        <div class="section-tag warn"><strong>${margen.toFixed(1)}%</strong> margen total</div>
       </div>
     </div>
 
-    <div class="grid3">
-      <div class="card">
-        <div class="card-title"><span class="lbl">Ganancia por Tipo</span></div>
-        <div class="pw">
-          <div class="pl"><span>Supervisión</span><span>${S(sup)}</span></div>
-          <div class="pb"><div class="pf" style="width:${T.gan>0?Math.min(100,Math.max(sup,0)/T.gan*100):0}%;background:linear-gradient(90deg,#2980B9,#3498DB)"></div></div>
+    <div class="project-hero-grid">
+      <section class="project-main-hero">
+        <div class="hero-topline"><span class="hero-kicker">Rentabilidad consolidada</span><span class="hero-index">VIN / FIN</span></div>
+        <div class="hero-number ${T.gan<0?'negative':''}">${S(T.gan)}</div>
+        <div class="hero-margin"><span class="margin-chip ${margen<0?'bad':''}">${margen>=0?'+':''}${margen.toFixed(1)}% margen</span><span>Resultado total del portafolio: ingresos contratados menos egresos comprometidos.</span></div>
+        <div class="project-major-grid" style="max-width:64%">
+          <div class="project-major-tile contract">
+            <div class="project-major-label">Ingreso contratado</div>
+            <div class="project-major-value">${S(T.ing)}</div>
+            <div class="project-major-note">${cobroPct.toFixed(1)}% cobrado · pendiente ${S(T.pcob)}.</div>
+          </div>
+          <div class="project-major-tile gain">
+            <div class="project-major-label">Egreso comprometido</div>
+            <div class="project-major-value ${T.egr>T.ing?'neg':''}">${S(T.egr)}</div>
+            <div class="project-major-note">Pagado ${S(T.pag)} y pendiente ${S(T.ppag)}.</div>
+          </div>
         </div>
-        <div class="pw">
-          <div class="pl"><span>Elaboración</span><span>${S(ela)}</span></div>
-          <div class="pb"><div class="pf" style="width:${T.gan>0?Math.min(100,Math.max(ela,0)/T.gan*100):0}%;background:linear-gradient(90deg,#D35400,#E67E22)"></div></div>
+        <div class="inst-visual wide">${institutionalVisual('finanzas')}</div>
+        <div class="project-hero-foot"><span><i></i>Formato editorial igual al resumen</span><span><i></i>Jerarquía en la utilidad total</span><span><i></i>Control integrado del portafolio</span></div>
+      </section>
+
+      <aside class="project-side-stack">
+        <div class="hero-side-card tight">
+          <div class="side-label">Caja y pendientes</div>
+          <div class="status-board">
+            <div class="status-box green"><span>Caja actual</span><b>${moneyK(T.cob-T.pag)}</b></div>
+            <div class="status-box gold"><span>Por cobrar</span><b>${moneyK(T.pcob)}</b></div>
+            <div class="status-box blue"><span>Cobrado</span><b>${moneyK(T.cob)}</b></div>
+            <div class="status-box red"><span>Por pagar</span><b>${moneyK(T.ppag)}</b></div>
+          </div>
         </div>
+        <div class="hero-side-card tight">
+          <div class="side-label">Ejecutado del portafolio</div>
+          <div class="meter-row">
+            <div class="meter-head"><span>Cobranza global</span><b>${cobroPct.toFixed(1)}%</b></div>
+            <div class="meter-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div>
+          </div>
+          <div class="meter-row">
+            <div class="meter-head"><span>Pago global</span><b>${pagoPct.toFixed(1)}%</b></div>
+            <div class="meter-line red"><i style="--w:${pagoPct.toFixed(1)}%"></i></div>
+          </div>
+          <div class="cash-note" style="margin-top:14px"><strong>Lectura rápida.</strong><br>${cobroPct>=pagoPct?'La entrada de efectivo supera los desembolsos ejecutados.':'Los pagos avanzan más rápido que la cobranza; revisar flujo.'}</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric-strip-card emphasis">
+        <div class="metric-top"><span class="metric-label">Ingreso contratado</span><span class="metric-pct">100%</span></div>
+        <div class="metric-value">${moneyK(T.ing)}</div>
+        <div class="metric-line"><i style="--w:100%"></i></div><div class="metric-foot">Base contractual consolidada</div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="lbl">Estado de Cobranza</span></div>
-        <div class="pw">
-          <div class="pl"><span>Cobrado</span><span>${S(T.cob)}</span></div>
-          <div class="pb"><div class="pf" style="width:${T.ing>0?Math.min(100,T.cob/T.ing*100):0}%;background:linear-gradient(90deg,#27AE60,#2ECC71)"></div></div>
-        </div>
-        <div class="pw">
-          <div class="pl"><span>Por cobrar</span><span>${S(T.pcob)}</span></div>
-          <div class="pb"><div class="pf" style="width:${T.ing>0?Math.min(100,T.pcob/T.ing*100):0}%;background:linear-gradient(90deg,#C08A0F,#FAB41E)"></div></div>
-        </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Cobrado</span><span class="metric-pct">${cobroPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(T.cob)}</div>
+        <div class="metric-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div><div class="metric-foot">Ingreso ya percibido del portafolio</div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="lbl">Proyecto Más Rentable</span></div>
-        ${(()=>{ const best=[...rows].sort((a,b)=>b.c.ganancia-a.c.ganancia)[0];
-          if(!best) return '<div class="empty">Sin datos</div>';
-          return `<div style="text-align:center;padding:6px 0">
-            <div style="font-size:0.72rem;color:rgba(245,241,232,0.45);text-transform:uppercase;letter-spacing:1px">${esc(best.p.nombre)}</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:2.3rem;color:var(--green);line-height:1.15">${S(best.c.ganancia)}</div>
-            <div style="font-size:0.76rem;color:rgba(245,241,232,0.5)">Margen ${best.c.margen.toFixed(1)}%</div>
-          </div>`; })()}
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Egreso comprometido</span><span class="metric-pct">${T.ing>0?(T.egr/T.ing*100).toFixed(1):0}%</span></div>
+        <div class="metric-value">${moneyK(T.egr)}</div>
+        <div class="metric-line red"><i style="--w:${T.ing>0?Math.min(100,T.egr/T.ing*100):0}%"></i></div><div class="metric-foot">Costo total registrado</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Pagado</span><span class="metric-pct">${pagoPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(T.pag)}</div>
+        <div class="metric-line red"><i style="--w:${pagoPct.toFixed(1)}%"></i></div><div class="metric-foot">Egreso ya desembolsado</div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title"><span class="lbl">Detalle Financiero por Proyecto</span></div>
+    <div class="analysis-grid">
+      <section class="analysis-card soft">
+        <div class="analysis-head">
+          <div><div class="analysis-title">Ganancia por proyecto</div><div class="analysis-copy">Comparación horizontal de utilidad para detectar el aporte real de cada proyecto al portafolio.</div></div>
+        </div>
+        <div class="chart-box editorial" style="height:320px"><canvas id="chFinGan"></canvas></div>
+      </section>
+      <section class="analysis-card soft">
+        <div class="analysis-head">
+          <div><div class="analysis-title">Egresos por categoría</div><div class="analysis-copy">Agrupación de bloques de egreso de todos los proyectos, para entender dónde se concentra el costo.</div></div>
+        </div>
+        <div class="chart-box editorial" style="height:320px"><canvas id="chFinCat"></canvas></div>
+      </section>
+    </div>
+
+    <div class="fin-grid3">
+      <section class="analysis-card soft">
+        <div class="analysis-head"><div><div class="analysis-title">Ganancia por tipo</div><div class="analysis-copy">Comparación entre proyectos de supervisión y elaboración.</div></div></div>
+        <div class="meter-row"><div class="meter-head"><span>Supervisión</span><b>${S(sup)}</b></div><div class="meter-line"><i style="--w:${Math.max(4,Math.min(100,Math.max(0,sup)/Math.max(1,T.gan)*100))}%"></i></div></div>
+        <div class="meter-row"><div class="meter-head"><span>Elaboración</span><b>${S(ela)}</b></div><div class="meter-line red"><i style="--w:${Math.max(4,Math.min(100,Math.max(0,ela)/Math.max(1,T.gan)*100))}%"></i></div></div>
+      </section>
+      <section class="analysis-card soft">
+        <div class="analysis-head"><div><div class="analysis-title">Estado de cobranza</div><div class="analysis-copy">Peso relativo entre lo ya cobrado y el flujo pendiente de entrar.</div></div></div>
+        <div class="meter-row"><div class="meter-head"><span>Cobrado</span><b>${S(T.cob)}</b></div><div class="meter-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div></div>
+        <div class="meter-row"><div class="meter-head"><span>Por cobrar</span><b>${S(T.pcob)}</b></div><div class="meter-line"><i style="--w:${porCobroPct.toFixed(1)}%"></i></div></div>
+        <div class="meter-row"><div class="meter-head"><span>Por pagar</span><b>${S(T.ppag)}</b></div><div class="meter-line red"><i style="--w:${porPagoPct.toFixed(1)}%"></i></div></div>
+      </section>
+      <section class="analysis-card soft">
+        <div class="analysis-head"><div><div class="analysis-title">Proyecto más rentable</div><div class="analysis-copy">El mejor desempeño de utilidad dentro del portafolio.</div></div></div>
+        ${best ? `<div class="highlight-stat"><div class="name">${esc(best.p.nombre)}</div><div class="val">${S(best.c.ganancia)}</div><div class="meta">Margen ${best.c.margen.toFixed(1)}% · Aporta ${(Math.max(0,best.c.ganancia)/posGan*100).toFixed(1)}% de la utilidad positiva</div></div>` : `<div class="empty">Sin datos</div>`}
+      </section>
+    </div>
+
+    <section class="portfolio-card">
+      <div class="portfolio-head"><div class="portfolio-title">Detalle financiero consolidado</div><div class="portfolio-note">Todos los proyectos en una sola lectura comparativa</div></div>
       <div class="twrap">
         <table>
           <thead><tr>
@@ -1404,18 +1816,18 @@ function renderFinanzas(){
             <th class="num">Pagado</th><th class="num">Por Pagar</th><th class="num">Caja</th>
           </tr></thead>
           <tbody>
-            ${rows.map(({p,c})=>`<tr>
-              <td style="font-weight:700">${esc(p.nombre)}</td>
+            ${rows.map(({p,c},i)=>`<tr>
+              <td><div class="project-cell"><span class="project-index">${String(i+1).padStart(2,'0')}</span><span class="project-name">${esc(p.nombre)}</span></div></td>
               <td><span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Sup.':'Elab.'}</span></td>
               <td class="num">${S(c.ingresoTotal)}</td>
-              <td class="num" style="color:var(--red)">${S(c.egresoTotal)}</td>
-              <td class="num" style="color:${c.ganancia>=0?'var(--green)':'var(--red)'};font-weight:800">${S(c.ganancia)}</td>
+              <td class="num" style="color:#d6877b">${S(c.egresoTotal)}</td>
+              <td class="num" style="color:${c.ganancia>=0?'#9fc8aa':'#d6877b'};font-weight:800">${S(c.ganancia)}</td>
               <td class="num">${c.margen.toFixed(1)}%</td>
-              <td class="num" style="color:var(--green)">${S(c.cobrado)}</td>
-              <td class="num" style="color:var(--gold-light)">${S(c.porCobrar)}</td>
-              <td class="num" style="color:var(--blue)">${S(c.pagado)}</td>
-              <td class="num" style="color:var(--red)">${S(c.porPagar)}</td>
-              <td class="num" style="color:${c.caja>=0?'var(--green)':'var(--red)'}">${S(c.caja)}</td>
+              <td class="num" style="color:#9fc8aa">${S(c.cobrado)}</td>
+              <td class="num" style="color:#ddb75d">${S(c.porCobrar)}</td>
+              <td class="num" style="color:#97b7c9">${S(c.pagado)}</td>
+              <td class="num" style="color:#d6877b">${S(c.porPagar)}</td>
+              <td class="num" style="color:${c.caja>=0?'#9fc8aa':'#d6877b'}">${S(c.caja)}</td>
             </tr>`).join('')}
           </tbody>
           <tfoot><tr>
@@ -1428,60 +1840,47 @@ function renderFinanzas(){
           </tr></tfoot>
         </table>
       </div>
-      <div style="margin-top:14px">
-        <button class="btn btn-primary btn-sm" onclick="exportCSV()">Exportar CSV</button>
-      </div>
-    </div>
+      <div style="margin-top:14px"><button class="btn btn-primary btn-sm" onclick="exportCSV()">Exportar CSV</button></div>
+    </section>
 
-    <div class="card">
-      <div class="card-title"><span class="lbl">Cobros Pendientes (flujo por entrar)</span></div>
-      <div class="twrap">
+    <section class="portfolio-card" style="margin-top:16px">
+      <div class="portfolio-head"><div class="portfolio-title">Cobros pendientes</div><div class="portfolio-note">Flujo por entrar ordenado por monto</div></div>
+      <div class="pending-list">
+        ${pendingItems.slice(0,10).map(it=>`<div class="pending-item"><div><div class="p-title">${esc(it.proyecto)}</div><div class="p-sub">${esc(it.bloque)} · ${esc(it.desc)}</div></div><div class="p-val">${S(it.monto)}</div></div>`).join('') || '<div class="empty">No hay cobros pendientes</div>'}
+      </div>
+      <div class="twrap" style="margin-top:14px">
         <table>
           <thead><tr><th>Proyecto</th><th>Bloque</th><th>Concepto</th><th class="num">Monto</th></tr></thead>
           <tbody>
-            ${(()=>{ const out=[];
-              proyectos.forEach(p=>(p.cobros||[]).forEach(g=>(g.items||[]).forEach(it=>{
-                if(it.estado!=='PAGADO' && num(it.monto)>0)
-                  out.push(`<tr><td>${esc(p.nombre)}</td><td style="color:rgba(245,241,232,0.55)">${esc(g.titulo)}</td>
-                    <td>${esc(it.desc)}</td><td class="num" style="color:var(--gold-light);font-weight:700">${S(it.monto)}</td></tr>`);
-              })));
-              return out.join('') || `<tr><td colspan="4" style="text-align:center;color:rgba(245,241,232,0.3);padding:18px">No hay cobros pendientes</td></tr>`;
-            })()}
+            ${pendingItems.map(it=>`<tr><td>${esc(it.proyecto)}</td><td style="color:rgba(245,241,232,0.55)">${esc(it.bloque)}</td><td>${esc(it.desc)}</td><td class="num" style="color:#ddb75d;font-weight:700">${S(it.monto)}</td></tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:rgba(245,241,232,0.3);padding:18px">No hay cobros pendientes</td></tr>`}
           </tbody>
           <tfoot><tr><td colspan="3">TOTAL POR COBRAR</td><td class="num">${S(T.pcob)}</td></tr></tfoot>
         </table>
       </div>
-    </div>`;
+    </section>`;
 
-  // Gráfico ganancia por proyecto
   killChart('chFinGan');
   const c1 = document.getElementById('chFinGan');
   if(c1) charts['chFinGan'] = new Chart(c1,{type:'bar',
-    data:{labels:rows.map(r=>r.p.nombre),
+    data:{labels:rows.map(r=>shortProjectName(r.p.nombre) || r.p.nombre),
       datasets:[{label:'Ganancia',data:rows.map(r=>r.c.ganancia),
-        backgroundColor:rows.map(r=>r.c.ganancia>=0?'rgba(46,204,113,0.7)':'rgba(231,76,60,0.7)'),borderRadius:6}]},
+        backgroundColor:rows.map(r=>r.c.ganancia>=0?'rgba(250,180,30,.72)':'rgba(222,127,114,.76)'),borderRadius:8,borderSkipped:false}]},
     options:{...COPTS,indexAxis:'y',
       plugins:{...COPTS.plugins,legend:{display:false},
-        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},
-          formatter:v=>'S/'+Number(v).toLocaleString('es-PE',{maximumFractionDigits:0})},
+        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},formatter:v=>moneyK(v)},
         tooltip:{callbacks:{label:x=>S(x.raw)}}},
-      scales:{x:{ticks:{color:tc,callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}},
-              y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
+      scales:{x:{ticks:{color:tc,callback:v=>moneyK(v)},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
 
-  // Gráfico egresos por categoría
   killChart('chFinCat');
   const c2 = document.getElementById('chFinCat');
-  const colores=['#E74C3C','#E67E22','#9B59B6','#3498DB','#1ABC9C','#95A5A6','#F39C12'];
+  const colores=['rgba(221,183,93,.82)','rgba(142,162,170,.78)','rgba(157,199,168,.76)','rgba(214,135,123,.76)','rgba(165,164,181,.74)','rgba(125,143,132,.72)','rgba(111,137,146,.72)'];
   if(c2 && catKeys.length) charts['chFinCat'] = new Chart(c2,{type:'bar',
-    data:{labels:catKeys,datasets:[{label:'Egreso',data:catKeys.map(k=>porCat[k]),
-      backgroundColor:catKeys.map((k,i)=>colores[i%colores.length]),borderRadius:6}]},
+    data:{labels:catKeys,datasets:[{label:'Egreso',data:catKeys.map(k=>porCat[k]),backgroundColor:catKeys.map((k,i)=>colores[i%colores.length]),borderRadius:8,borderSkipped:false}]},
     options:{...COPTS,indexAxis:'y',
       plugins:{...COPTS.plugins,legend:{display:false},
-        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},
-          formatter:v=>'S/'+Number(v).toLocaleString('es-PE',{maximumFractionDigits:0})},
+        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},formatter:v=>moneyK(v)},
         tooltip:{callbacks:{label:x=>S(x.raw)}}},
-      scales:{x:{ticks:{color:tc,callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}},
-              y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
+      scales:{x:{ticks:{color:tc,callback:v=>moneyK(v)},grid:{color:gc}},y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
 }
 
 window.exportCSV = function(){
