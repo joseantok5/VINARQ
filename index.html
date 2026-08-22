@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VINARQ · Gestión de Proyectos</title>
+<title>VINARQ · Gestión de Proyectos · UI 2.1</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
@@ -163,6 +163,420 @@ td input[type=number]{text-align:right}
 .spin{width:38px;height:38px;border:3px solid rgba(250,180,30,0.18);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .ldt{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);letter-spacing:2px}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.0 · Editorial / Arquitectura + Finanzas
+   Rediseño visual no destructivo: conserva la lógica existente.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --ink:#0f1416;
+  --ink-2:#151b1e;
+  --ink-3:#1b2326;
+  --panel:#171e21;
+  --panel-2:#1c2528;
+  --cream:#f2f1eb;
+  --muted:rgba(242,241,235,.54);
+  --muted-2:rgba(242,241,235,.34);
+  --line:rgba(255,255,255,.075);
+  --line-soft:rgba(255,255,255,.045);
+  --border:rgba(255,255,255,.075);
+  --glass:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
+  --radius:18px;
+  --shadow:0 18px 45px rgba(0,0,0,.22);
+}
+html{background:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 92% 2%,rgba(250,180,30,.055),transparent 24%),
+    radial-gradient(circle at 8% 96%,rgba(104,143,121,.045),transparent 30%),
+    linear-gradient(180deg,#0d1214 0%,#111719 55%,#0d1214 100%);
+  color:var(--cream);
+  letter-spacing:.005em;
+}
+
+/* APP SHELL */
+#app{
+  min-height:100vh;
+  display:grid !important;
+  grid-template-columns:248px minmax(0,1fr);
+  grid-template-rows:auto auto 1fr;
+  background:transparent;
+}
+.header{
+  grid-column:1/-1;
+  grid-row:1;
+  background:rgba(13,18,20,.82);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  box-shadow:none;
+  padding:14px 24px;
+  min-height:74px;
+}
+.logo-hdr{height:38px;filter:saturate(.86) contrast(1.04)}
+.hl{gap:14px}.hl>div{display:flex;align-items:center}
+.hl span{font-size:.61rem;letter-spacing:2.2px;color:rgba(242,241,235,.36)}
+.hr-side{gap:10px}
+.chip{background:rgba(255,255,255,.035);border:1px solid var(--line);color:rgba(242,241,235,.72);border-radius:999px;padding:7px 11px}
+.sync{
+  grid-column:1/-1;
+  grid-row:2;
+  background:rgba(11,15,17,.72);
+  border-bottom:1px solid var(--line-soft);
+  padding:5px 24px;
+  color:rgba(242,241,235,.38);
+}
+.dot{width:6px;height:6px;background:#75a98a;box-shadow:0 0 0 4px rgba(117,169,138,.08)}
+
+/* SIDEBAR reutilizando #nav */
+.nav{
+  grid-column:1;
+  grid-row:3;
+  position:sticky;
+  top:0;
+  align-self:start;
+  height:calc(100vh - 101px);
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  padding:24px 16px 20px;
+  border-right:1px solid var(--line);
+  border-bottom:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  background:rgba(13,18,20,.56);
+  backdrop-filter:blur(14px);
+}
+.nav::before{
+  content:'NAVEGACIÓN';
+  padding:0 11px 8px;
+  color:rgba(242,241,235,.26);
+  font-size:.58rem;
+  font-weight:800;
+  letter-spacing:1.8px;
+}
+.tab{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  background:transparent;
+  border:1px solid transparent;
+  color:rgba(242,241,235,.52);
+  font-size:.78rem;
+  font-weight:700;
+  text-align:left;
+  position:relative;
+}
+.tab:hover{background:rgba(255,255,255,.035);border-color:var(--line-soft);color:var(--cream)}
+.tab.active{
+  background:linear-gradient(90deg,rgba(250,180,30,.105),rgba(250,180,30,.018));
+  border-color:rgba(250,180,30,.14);
+  color:var(--cream);
+}
+.tab.active::before{content:'';position:absolute;left:-1px;top:8px;bottom:8px;width:2px;border-radius:2px;background:var(--gold)}
+.tab.add{margin-top:8px;border:1px dashed rgba(250,180,30,.22);color:rgba(250,180,30,.82);text-align:center}
+.tab.add:hover{background:rgba(250,180,30,.07)}
+#secs{grid-column:2;grid-row:3;min-width:0}
+.sec{padding:32px clamp(20px,3vw,44px) 46px;max-width:1600px;margin:0 auto}
+.sec.active{animation:fade .22s ease}
+.sec-title{
+  color:var(--cream);
+  font-family:'Nunito',sans-serif;
+  font-weight:800;
+  font-size:1.35rem;
+  letter-spacing:-.02em;
+  margin-bottom:22px;
+}
+.sec-title::after{background:linear-gradient(90deg,rgba(255,255,255,.08),transparent)}
+
+/* SURFACES */
+.card,.kpi,.box,.modal{
+  background:linear-gradient(145deg,rgba(255,255,255,.042),rgba(255,255,255,.016));
+  border:1px solid var(--line);
+  box-shadow:0 1px 0 rgba(255,255,255,.025) inset,var(--shadow);
+}
+.card{border-radius:var(--radius);padding:20px 21px;margin-bottom:18px}
+.card:hover{border-color:rgba(255,255,255,.105)}
+.card-title{
+  font-family:'Nunito',sans-serif;
+  font-size:.73rem;
+  font-weight:800;
+  letter-spacing:1.25px;
+  text-transform:uppercase;
+  color:rgba(242,241,235,.64);
+  margin-bottom:18px;
+}
+.card-title .lbl::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:.75;display:inline-block}
+
+/* KPI: menos cajas, más jerarquía */
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.kpi{border-radius:16px;padding:17px 17px 16px;min-height:104px;box-shadow:none}
+.kpi::before{display:none}
+.kpi:hover{transform:translateY(-2px);border-color:rgba(250,180,30,.2);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.02))}
+.kpi .k-l{color:rgba(242,241,235,.40);font-size:.62rem;font-weight:800;letter-spacing:1.25px;margin-bottom:10px}
+.kpi .k-v{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.25px;color:var(--cream)}
+.kpi .k-s{font-size:.68rem;color:rgba(242,241,235,.33);margin-top:8px}
+.k-v.g{color:#9fc8aa}.k-v.r{color:#de7f72}.k-v.a{color:var(--gold-light)}.k-v.b{color:#84a9bd}
+
+/* KPI principal: Ganancia proyectada / total */
+#sec-resumen .kpis .kpi:nth-child(3),
+#sec-finanzas .kpis .kpi:nth-child(3){
+  grid-column:span 2;
+  background:
+    radial-gradient(circle at 88% 18%,rgba(250,180,30,.11),transparent 34%),
+    linear-gradient(145deg,rgba(250,180,30,.065),rgba(255,255,255,.018));
+  border-color:rgba(250,180,30,.16);
+}
+#sec-resumen .kpis .kpi:nth-child(3) .k-v,
+#sec-finanzas .kpis .kpi:nth-child(3) .k-v{font-size:2.75rem;color:var(--gold-light)}
+#sec-resumen .kpis .kpi:nth-child(3) .k-l,
+#sec-finanzas .kpis .kpi:nth-child(3) .k-l{color:rgba(250,203,83,.72)}
+
+/* GRIDS */
+.grid2{grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:18px}
+.grid3{gap:18px}
+.chart-box{height:270px}
+
+/* TABLES — visualización primero, edición después */
+.twrap{border:1px solid var(--line-soft);border-radius:14px;overflow:auto;background:rgba(5,8,9,.12)}
+table{font-size:.79rem;border-collapse:separate;border-spacing:0}
+th{
+  background:rgba(255,255,255,.025);
+  color:rgba(242,241,235,.42);
+  font-size:.60rem;
+  letter-spacing:1.15px;
+  border-bottom:1px solid var(--line);
+  padding:11px 12px;
+  position:sticky;top:0;z-index:1;
+}
+td{padding:9px 12px;border-bottom:1px solid var(--line-soft);color:rgba(242,241,235,.78)}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:rgba(255,255,255,.022)}
+tfoot td{background:rgba(250,180,30,.038);border-top:1px solid rgba(250,180,30,.16);color:var(--cream)}
+td input,td select{
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:7px;
+  padding:6px 7px;
+  box-shadow:none;
+}
+td input:hover,td select:hover{background:rgba(255,255,255,.035)}
+td input:focus,td select:focus{background:rgba(250,180,30,.055);border-color:rgba(250,180,30,.35)}
+
+/* BADGES / PROGRESS */
+.bdg{border-radius:999px;padding:4px 8px;font-size:.62rem;letter-spacing:.2px}
+.bdg.pagado{background:rgba(117,169,138,.10);color:#9fc8aa;border-color:rgba(117,169,138,.18)}
+.bdg.pend{background:rgba(222,127,114,.09);color:#de8e82;border-color:rgba(222,127,114,.17)}
+.bdg.sup{background:rgba(132,169,189,.10);color:#9ab7c6;border-color:rgba(132,169,189,.17)}
+.bdg.ela{background:rgba(250,180,30,.08);color:#e2bb62;border-color:rgba(250,180,30,.16)}
+.pb{height:6px;background:rgba(255,255,255,.055)}
+.pl{font-size:.72rem;color:rgba(242,241,235,.60)}
+
+/* BUTTONS */
+.btn{border-radius:9px;font-size:.70rem;letter-spacing:.8px;padding:9px 14px}
+.btn-primary{background:var(--gold);color:#151515;box-shadow:none}
+.btn-primary:hover{box-shadow:0 8px 24px rgba(250,180,30,.16)}
+.btn-ghost{background:rgba(255,255,255,.035);border:1px solid var(--line);color:rgba(242,241,235,.72)}
+.btn-ghost:hover{background:rgba(255,255,255,.065);color:var(--cream)}
+.btn-danger{background:rgba(222,127,114,.07);border-color:rgba(222,127,114,.16);color:#dc9187}
+
+/* LOGIN / MODAL */
+.screen{background:
+  radial-gradient(circle at 50% 18%,rgba(250,180,30,.08),transparent 24%),
+  linear-gradient(180deg,#0d1214,#111719)}
+.box{border-radius:22px;padding:38px}
+.field label{color:rgba(242,241,235,.44)}
+input,select,textarea{background:rgba(255,255,255,.035);border-color:var(--line);color:var(--cream)}
+input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);background:rgba(250,180,30,.045)}
+.modal{background:#141b1e;border-radius:20px}
+.modal h3{font-family:'Nunito',sans-serif;font-size:1rem;color:var(--cream);letter-spacing:.2px}
+
+/* Scroll */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.13);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(250,180,30,.32)}
+
+/* RESPONSIVE */
+@media(max-width:1180px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #sec-resumen .kpis .kpi:nth-child(3),#sec-finanzas .kpis .kpi:nth-child(3){grid-column:span 1}
+  .grid2{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  #app{display:block !important}
+  .header{position:sticky;top:0;padding:10px 14px;min-height:64px}
+  .sync{padding:4px 14px}
+  .hl span{display:none}.logo-hdr{height:32px}
+  .hr-side>div:first-child{display:none}
+  .nav{
+    position:sticky;top:64px;height:auto;z-index:90;
+    flex-direction:row;align-items:center;
+    padding:8px 12px;border-right:0;border-bottom:1px solid var(--line);
+    overflow-x:auto;background:rgba(13,18,20,.92)
+  }
+  .nav::before{display:none}
+  .tab{width:auto;min-width:max-content;padding:8px 11px;text-align:center}
+  .tab.active::before{left:8px;right:8px;top:auto;bottom:-1px;width:auto;height:2px}
+  .tab.add{margin-top:0}
+  .sec{padding:22px 14px 36px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #sec-resumen .kpis .kpi:nth-child(3),#sec-finanzas .kpis .kpi:nth-child(3){grid-column:span 2}
+  .kpi .k-v{font-size:1.72rem}
+  #sec-resumen .kpis .kpi:nth-child(3) .k-v,#sec-finanzas .kpis .kpi:nth-child(3) .k-v{font-size:2.25rem}
+}
+@media(max-width:520px){
+  .kpis{grid-template-columns:1fr 1fr;gap:9px}
+  .kpi{padding:14px;min-height:94px}
+  .kpi .k-l{font-size:.56rem}.kpi .k-v{font-size:1.55rem}
+  .card{padding:15px;border-radius:15px}
+  .sec-title{font-size:1.12rem}
+  .hr-side{gap:6px}.chip{display:none}
+  .btn-sm{padding:6px 9px}
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.1 · RESUMEN EDITORIAL
+   Referencia: panel técnico oscuro + topografía + jerarquía financiera.
+   ═══════════════════════════════════════════════════════════════ */
+#sec-resumen{padding-top:28px}
+#sec-resumen .sec-title{display:none}
+.summary-head{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;margin:2px 0 22px}
+.summary-eyebrow{font-size:.59rem;font-weight:800;letter-spacing:2.1px;color:rgba(250,180,30,.66);text-transform:uppercase;margin-bottom:8px}
+.summary-h1{font-family:'Nunito',sans-serif;font-size:clamp(1.7rem,2.2vw,2.45rem);font-weight:800;letter-spacing:-.055em;line-height:1.02;color:var(--cream)}
+.summary-sub{max-width:650px;margin-top:8px;color:rgba(242,241,235,.39);font-size:.76rem;line-height:1.55}
+.summary-tags{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.summary-tag{border:1px solid var(--line);background:rgba(255,255,255,.025);border-radius:999px;padding:7px 10px;color:rgba(242,241,235,.5);font-size:.64rem;font-weight:700;white-space:nowrap}
+.summary-tag strong{color:var(--cream);font-weight:800}
+.summary-tag.live{border-color:rgba(117,169,138,.16);color:#91b39a;background:rgba(117,169,138,.045)}
+.summary-tag.live::before{content:'';width:5px;height:5px;background:#82b291;box-shadow:0 0 0 4px rgba(130,178,145,.07);border-radius:50%;display:inline-block;margin-right:7px;vertical-align:1px}
+
+.overview-hero{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,.72fr);gap:18px;margin-bottom:18px}
+.profit-hero,.hero-side-card,.metric-strip-card,.analysis-card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:20px}
+.profit-hero{min-height:405px;padding:26px 28px 22px;background:
+  radial-gradient(circle at 82% 17%,rgba(250,180,30,.105),transparent 29%),
+  radial-gradient(circle at 16% 90%,rgba(117,169,138,.055),transparent 34%),
+  linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  box-shadow:0 24px 60px rgba(0,0,0,.23)}
+.profit-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.35),transparent 78%)}
+.hero-topline{display:flex;justify-content:space-between;align-items:center;gap:12px;position:relative;z-index:2}
+.hero-kicker{font-size:.61rem;text-transform:uppercase;letter-spacing:1.7px;color:rgba(242,241,235,.39);font-weight:800}
+.hero-index{font-family:'Bebas Neue',sans-serif;color:rgba(250,180,30,.6);font-size:.92rem;letter-spacing:1.6px}
+.hero-number{position:relative;z-index:2;margin-top:22px;font-family:'Bebas Neue',sans-serif;font-size:clamp(3.55rem,6vw,6rem);line-height:.87;letter-spacing:.01em;color:var(--gold-light);text-shadow:0 0 28px rgba(250,180,30,.07)}
+.hero-number.negative{color:#dc8a80}
+.hero-margin{position:relative;z-index:2;display:flex;align-items:center;gap:10px;margin-top:13px;color:rgba(242,241,235,.48);font-size:.73rem}
+.hero-margin strong{color:#a9cbb2;font-weight:800}
+.hero-margin .negative{color:#dc8a80}
+.margin-chip{display:inline-flex;align-items:center;border:1px solid rgba(117,169,138,.16);background:rgba(117,169,138,.06);border-radius:999px;padding:5px 9px;color:#9bc2a5;font-size:.64rem;font-weight:800}
+.margin-chip.bad{border-color:rgba(222,127,114,.2);background:rgba(222,127,114,.06);color:#dc8a80}
+.topo-svg{position:absolute;right:-10px;top:70px;width:66%;height:180px;opacity:.32;z-index:1;pointer-events:none}
+.skyline-wrap{position:absolute;left:26px;right:26px;bottom:65px;height:150px;z-index:3;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid rgba(255,255,255,.085)}
+.skyline-bar{flex:1;min-width:20px;max-width:66px;height:var(--h);min-height:14px;position:relative;border-radius:5px 5px 1px 1px;background:linear-gradient(180deg,rgba(250,203,83,.95),rgba(133,158,127,.55));box-shadow:0 -10px 30px rgba(250,180,30,.04);transition:filter .2s,transform .2s}
+.skyline-bar:nth-child(3n+2){background:linear-gradient(180deg,rgba(181,207,166,.92),rgba(94,132,112,.48))}
+.skyline-bar:nth-child(3n){background:linear-gradient(180deg,rgba(221,196,126,.9),rgba(124,145,120,.45))}
+.skyline-bar.negative{background:linear-gradient(180deg,rgba(222,127,114,.84),rgba(124,75,71,.45))}
+.skyline-bar:hover{filter:brightness(1.14);transform:translateY(-2px)}
+.skyline-bar::after{content:attr(data-short);position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 10px);font-size:.53rem;font-weight:700;color:rgba(242,241,235,.28);white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis}
+.skyline-bar::before{content:attr(data-val);position:absolute;left:50%;transform:translateX(-50%);bottom:calc(100% + 6px);font-size:.54rem;color:rgba(242,241,235,.48);white-space:nowrap;opacity:0;transition:opacity .18s}
+.skyline-bar:hover::before{opacity:1}
+.hero-footer{position:absolute;left:28px;right:28px;bottom:17px;z-index:4;display:flex;gap:18px;align-items:center;color:rgba(242,241,235,.32);font-size:.61rem}
+.hero-footer span{display:flex;align-items:center;gap:6px}
+.hero-footer i{width:18px;height:2px;border-radius:2px;background:var(--gold);opacity:.72}
+.hero-footer span:nth-child(2) i{background:#8eaa93}.hero-footer span:nth-child(3) i{background:#8a9497}
+
+.hero-side{display:grid;grid-template-rows:1.15fr .85fr;gap:18px}
+.hero-side-card{padding:21px 21px 20px;box-shadow:0 18px 44px rgba(0,0,0,.16)}
+.side-label{font-size:.6rem;font-weight:800;letter-spacing:1.55px;text-transform:uppercase;color:rgba(242,241,235,.36)}
+.cash-layout{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:13px;margin-top:14px}
+.cash-ring{width:112px;height:112px;border-radius:50%;position:relative;background:conic-gradient(var(--gold) var(--p),rgba(255,255,255,.052) 0);display:grid;place-items:center;box-shadow:0 0 32px rgba(250,180,30,.04)}
+.cash-ring::after{content:'';width:82px;height:82px;border-radius:50%;background:#151c1f;border:1px solid rgba(255,255,255,.05);position:absolute}
+.cash-ring-inner{position:relative;z-index:2;text-align:center}
+.cash-ring-inner b{display:block;font-family:'Bebas Neue',sans-serif;font-size:1.55rem;line-height:1;color:var(--cream)}
+.cash-ring-inner span{font-size:.53rem;color:rgba(242,241,235,.34);text-transform:uppercase;letter-spacing:.8px}
+.cash-value{font-family:'Bebas Neue',sans-serif;font-size:2.08rem;color:var(--cream);line-height:1;margin-bottom:8px}
+.cash-value.negative{color:#dc8a80}
+.cash-note{font-size:.65rem;line-height:1.55;color:rgba(242,241,235,.35)}
+.cash-note strong{color:rgba(242,241,235,.62)}
+.side-split{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}
+.side-mini{padding:14px;border-radius:13px;background:rgba(255,255,255,.025);border:1px solid var(--line-soft)}
+.side-mini span{display:block;color:rgba(242,241,235,.32);font-size:.56rem;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:8px}
+.side-mini b{font-family:'Bebas Neue',sans-serif;font-size:1.32rem;line-height:1;color:var(--cream);font-weight:400}
+.side-mini.receivable b{color:#ddb75d}.side-mini.payable b{color:#d6877b}
+
+.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.metric-strip-card{padding:17px 17px 15px;min-height:120px;box-shadow:none}
+.metric-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.metric-label{font-size:.58rem;text-transform:uppercase;letter-spacing:1.1px;color:rgba(242,241,235,.34);font-weight:800}
+.metric-value{font-family:'Bebas Neue',sans-serif;font-size:1.85rem;color:var(--cream);line-height:1.05;margin-top:10px}
+.metric-pct{font-size:.61rem;color:rgba(242,241,235,.43);white-space:nowrap}
+.metric-line{height:3px;border-radius:3px;background:rgba(255,255,255,.05);overflow:hidden;margin-top:13px}
+.metric-line i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--gold),#b7c9a6);border-radius:3px}
+.metric-line.red i{background:linear-gradient(90deg,#c87970,#d3a978)}
+.metric-foot{font-size:.58rem;color:rgba(242,241,235,.28);margin-top:8px}
+
+.analysis-grid{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(320px,.72fr);gap:18px;margin-bottom:18px}
+.analysis-card{padding:21px 22px 18px;box-shadow:0 18px 44px rgba(0,0,0,.13)}
+.analysis-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:8px}
+.analysis-title{font-size:.68rem;font-weight:800;letter-spacing:1.35px;text-transform:uppercase;color:rgba(242,241,235,.62)}
+.analysis-copy{font-size:.62rem;color:rgba(242,241,235,.3);margin-top:5px;line-height:1.45}
+.legend-mini{display:flex;gap:12px;flex-wrap:wrap;font-size:.56rem;color:rgba(242,241,235,.34)}
+.legend-mini span{display:flex;align-items:center;gap:5px}.legend-mini i{width:14px;height:3px;border-radius:3px;background:rgba(255,255,255,.14)}
+.legend-mini span:nth-child(2) i{background:rgba(148,166,161,.45)}.legend-mini span:nth-child(3) i{background:var(--gold)}
+.chart-box.editorial{height:315px;margin-top:4px}
+.donut-zone{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:12px;margin-top:11px}
+.donut-wrap{height:150px;position:relative}
+.donut-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center;pointer-events:none}
+.donut-center b{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;line-height:1;color:var(--cream);font-weight:400}
+.donut-center span{font-size:.49rem;text-transform:uppercase;letter-spacing:.9px;color:rgba(242,241,235,.3);margin-top:4px}
+.profit-rank{display:flex;flex-direction:column;gap:10px}
+.rank-row{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:8px;align-items:center}
+.rank-no{font-family:'Bebas Neue',sans-serif;font-size:.78rem;color:rgba(242,241,235,.23)}
+.rank-main{min-width:0}.rank-name{font-size:.62rem;color:rgba(242,241,235,.63);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank-track{height:3px;background:rgba(255,255,255,.045);border-radius:3px;margin-top:5px;overflow:hidden}.rank-track i{display:block;width:var(--w);height:100%;background:linear-gradient(90deg,#87a48d,var(--gold));border-radius:3px}
+.rank-value{font-family:'Bebas Neue',sans-serif;font-size:.83rem;color:rgba(242,241,235,.62)}
+.rank-value.neg{color:#d6877b}
+
+.portfolio-card{background:linear-gradient(145deg,rgba(255,255,255,.037),rgba(255,255,255,.012));border:1px solid var(--line);border-radius:20px;padding:21px 22px;overflow:hidden}
+.portfolio-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}
+.portfolio-title{font-size:.68rem;font-weight:800;letter-spacing:1.35px;text-transform:uppercase;color:rgba(242,241,235,.62)}
+.portfolio-note{font-size:.6rem;color:rgba(242,241,235,.28)}
+#sec-resumen .portfolio-card .twrap{border:0;border-radius:0;background:transparent}
+#sec-resumen .portfolio-card table{font-size:.75rem}
+#sec-resumen .portfolio-card th{background:transparent;padding:10px 10px;border-bottom-color:rgba(255,255,255,.07)}
+#sec-resumen .portfolio-card td{padding:11px 10px}
+.project-cell{display:flex;align-items:center;gap:10px;min-width:210px}
+.project-index{font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:rgba(242,241,235,.22);width:22px}
+.project-name{font-weight:700;color:rgba(242,241,235,.82)}
+.margin-cell{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.margin-mini{width:45px;height:3px;border-radius:3px;background:rgba(255,255,255,.05);overflow:hidden}.margin-mini i{display:block;width:var(--w);height:100%;background:linear-gradient(90deg,#7d9a85,var(--gold))}.margin-mini i.bad{background:#c87970}
+#sec-resumen .portfolio-card .btn-ghost{border-color:transparent;background:rgba(255,255,255,.025);padding:6px 9px}
+
+@media(max-width:1180px){
+  .overview-hero,.analysis-grid{grid-template-columns:1fr}
+  .hero-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .metric-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  #sec-resumen{padding-top:20px}
+  .summary-head{align-items:flex-start;flex-direction:column;margin-bottom:17px}.summary-tags{justify-content:flex-start}
+  .profit-hero{min-height:390px;padding:22px 20px 19px}.skyline-wrap{left:20px;right:20px}.hero-footer{left:20px;right:20px}
+  .hero-side{grid-template-columns:1fr}
+  .cash-layout{grid-template-columns:108px 1fr}.cash-ring{width:100px;height:100px}.cash-ring::after{width:73px;height:73px}
+  .analysis-card,.portfolio-card{padding:17px}
+  .donut-zone{grid-template-columns:135px 1fr}.donut-wrap{height:135px}
+}
+@media(max-width:520px){
+  .summary-h1{font-size:1.65rem}.summary-sub{font-size:.7rem}
+  .metric-strip{grid-template-columns:1fr 1fr;gap:9px}.metric-strip-card{min-height:106px;padding:14px}.metric-value{font-size:1.48rem}
+  .profit-hero{min-height:365px}.hero-number{font-size:3.45rem}.topo-svg{width:88%;right:-24px;top:86px}.skyline-wrap{height:132px;gap:5px}
+  .skyline-bar::after{font-size:.46rem;max-width:45px}.hero-footer{gap:10px;font-size:.53rem}
+  .cash-layout{grid-template-columns:94px 1fr}.cash-ring{width:88px;height:88px}.cash-ring::after{width:64px;height:64px}.cash-ring-inner b{font-size:1.3rem}.cash-value{font-size:1.65rem}
+  .side-split{grid-template-columns:1fr 1fr}.side-mini{padding:12px}.side-mini b{font-size:1.05rem}
+  .analysis-head{flex-direction:column}.chart-box.editorial{height:270px}
+  .donut-zone{grid-template-columns:1fr}.donut-wrap{height:165px}.profit-rank{margin-top:4px}
+}
+
 </style>
 </head>
 <body>
@@ -332,7 +746,7 @@ const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'
 const uid = () => Math.random().toString(36).slice(2,10);
 
 function killChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
-const tc = 'rgba(245,241,232,0.42)', gc = 'rgba(250,180,30,0.09)';
+const tc = 'rgba(242,241,235,0.42)', gc = 'rgba(255,255,255,0.055)';
 const COPTS = {responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{color:'rgba(245,241,232,0.72)',font:{size:11}}},datalabels:{display:false}}};
 
@@ -460,96 +874,194 @@ window.go = function(tab){ activeTab = tab; render(); window.scrollTo({top:0,beh
 function renderResumen(){
   const el = document.getElementById('sec-resumen');
   if(!el) return;
+
   const tot = {ing:0,egr:0,gan:0,cob:0,pcob:0,pag:0,ppag:0};
-  proyectos.forEach(p=>{ const c=calc(p);
+  const rows = proyectos.map(p=>({p,c:calc(p)}));
+  rows.forEach(({c})=>{
     tot.ing+=c.ingresoTotal; tot.egr+=c.egresoTotal; tot.gan+=c.ganancia;
-    tot.cob+=c.cobrado; tot.pcob+=c.porCobrar; tot.pag+=c.pagado; tot.ppag+=c.porPagar; });
+    tot.cob+=c.cobrado; tot.pcob+=c.porCobrar; tot.pag+=c.pagado; tot.ppag+=c.porPagar;
+  });
+
   const margen = tot.ing>0 ? (tot.gan/tot.ing*100) : 0;
+  const cobroPct = tot.ing>0 ? Math.max(0,Math.min(100,tot.cob/tot.ing*100)) : 0;
+  const pagoPct = tot.egr>0 ? Math.max(0,Math.min(100,tot.pag/tot.egr*100)) : 0;
+  const egrPct = tot.ing>0 ? Math.max(0,Math.min(100,tot.egr/tot.ing*100)) : 0;
+  const ganPct = tot.ing>0 ? Math.max(0,Math.min(100,Math.abs(tot.gan)/tot.ing*100)) : 0;
+  const caja = tot.cob-tot.pag;
   const nSup = proyectos.filter(p=>p.tipo==='supervision').length;
   const nEla = proyectos.filter(p=>p.tipo==='elaboracion').length;
+  const money0 = n=>'S/ '+Number(n||0).toLocaleString('es-PE',{maximumFractionDigits:0});
+  const moneyK = n=>{
+    const a=Math.abs(Number(n||0));
+    if(a>=1000000) return 'S/ '+(Number(n)/1000000).toLocaleString('es-PE',{maximumFractionDigits:2})+' M';
+    if(a>=1000) return 'S/ '+(Number(n)/1000).toLocaleString('es-PE',{maximumFractionDigits:0})+' K';
+    return money0(n);
+  };
+  const short = s=>String(s||'').replace(/\b(ELABORACIÓN|SUPERVISIÓN|EXPEDIENTE|TÉCNICO|PROYECTO|DE|DEL|LA|EL)\b/gi,'').replace(/\s+/g,' ').trim().slice(0,11) || 'Proyecto';
+
+  const maxAbsGan = Math.max(1,...rows.map(r=>Math.abs(r.c.ganancia)));
+  const skyline = rows.map(({p,c})=>{
+    const h=Math.max(12,Math.round(Math.abs(c.ganancia)/maxAbsGan*100));
+    return `<div class="skyline-bar ${c.ganancia<0?'negative':''}" style="--h:${h}%" data-short="${esc(short(p.nombre))}" data-val="${esc(moneyK(c.ganancia))}" title="${esc(p.nombre)} · ${esc(S(c.ganancia))}"></div>`;
+  }).join('');
+
+  const profitRows=[...rows].sort((a,b)=>b.c.ganancia-a.c.ganancia);
+  const positiveProfit=Math.max(1,profitRows.reduce((s,r)=>s+Math.max(0,r.c.ganancia),0));
+  const rankHtml=profitRows.slice(0,5).map((r,i)=>{
+    const w=r.c.ganancia>0?Math.max(4,Math.min(100,r.c.ganancia/positiveProfit*100)):4;
+    return `<div class="rank-row">
+      <div class="rank-no">${String(i+1).padStart(2,'0')}</div>
+      <div class="rank-main"><div class="rank-name" title="${esc(r.p.nombre)}">${esc(r.p.nombre)}</div><div class="rank-track"><i style="--w:${w}%"></i></div></div>
+      <div class="rank-value ${r.c.ganancia<0?'neg':''}">${esc(moneyK(r.c.ganancia))}</div>
+    </div>`;
+  }).join('');
 
   el.innerHTML = `
-    <div class="sec-title">Resumen General</div>
-    <div class="kpis">
-      ${kpi('Ingreso Contratado', S(tot.ing), 'a', `${proyectos.length} proyectos`)}
-      ${kpi('Egreso Comprometido', S(tot.egr), 'r', '')}
-      ${kpi('Ganancia Proyectada', S(tot.gan), tot.gan>=0?'g':'r', `Margen ${margen.toFixed(1)}%`)}
-      ${kpi('Ya Cobrado', S(tot.cob), 'g', '')}
-      ${kpi('Por Cobrar', S(tot.pcob), 'a', '')}
-      ${kpi('Por Pagar', S(tot.ppag), 'r', '')}
-      ${kpi('Caja Actual', S(tot.cob-tot.pag), (tot.cob-tot.pag)>=0?'g':'r', 'Cobrado − Pagado')}
-      ${kpi('Tipos', `${nSup} / ${nEla}`, 'b', 'Supervisión / Elaboración')}
-    </div>
-
-    <div class="grid2">
-      <div class="card">
-        <div class="card-title"><span class="lbl">Ingreso vs Egreso vs Ganancia por Proyecto</span></div>
-        <div class="chart-box" style="height:300px"><canvas id="chResumen"></canvas></div>
+    <div class="summary-head">
+      <div>
+        <div class="summary-eyebrow">VINARQ · CONTROL ECONÓMICO DE PROYECTOS</div>
+        <div class="summary-h1">Resumen General</div>
+        <div class="summary-sub">Lectura ejecutiva del portafolio: rentabilidad, cobranza, compromisos y caja. Los importes se calculan en tiempo real con la información registrada en cada proyecto.</div>
       </div>
-      <div class="card">
-        <div class="card-title"><span class="lbl">Participación en la Ganancia Total</span></div>
-        <div class="chart-box" style="height:300px"><canvas id="chDona"></canvas></div>
+      <div class="summary-tags">
+        <div class="summary-tag live">Datos sincronizados</div>
+        <div class="summary-tag"><strong>${proyectos.length}</strong> proyectos</div>
+        <div class="summary-tag"><strong>${nSup}</strong> supervisión · <strong>${nEla}</strong> elaboración</div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title"><span class="lbl">Todos los Proyectos</span></div>
+    <div class="overview-hero">
+      <section class="profit-hero">
+        <div class="hero-topline"><span class="hero-kicker">Ganancia proyectada del portafolio</span><span class="hero-index">VIN / 01</span></div>
+        <div class="hero-number ${tot.gan<0?'negative':''}">${money0(tot.gan)}</div>
+        <div class="hero-margin">
+          <span class="margin-chip ${margen<0?'bad':''}">${margen>=0?'+':''}${margen.toFixed(1)}% margen</span>
+          <span>Ingreso menos egreso comprometido</span>
+        </div>
+
+        <svg class="topo-svg" viewBox="0 0 700 190" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 132 C90 104 112 146 194 113 S319 71 380 100 S480 144 552 91 S638 54 700 70" fill="none" stroke="rgba(250,203,83,.52)" stroke-width="1.2"/>
+          <path d="M0 154 C88 124 135 160 216 132 S338 95 408 122 S525 161 590 113 S654 83 700 92" fill="none" stroke="rgba(157,196,170,.38)" stroke-width="1"/>
+          <path d="M0 174 C110 145 150 181 245 151 S366 121 440 144 S554 179 615 143 S671 120 700 125" fill="none" stroke="rgba(255,255,255,.18)" stroke-width=".8"/>
+        </svg>
+
+        <div class="skyline-wrap">${skyline || '<div style="color:rgba(242,241,235,.25);font-size:.68rem">Sin proyectos para graficar</div>'}</div>
+        <div class="hero-footer"><span><i></i>Ganancia por proyecto</span><span><i></i>Rentabilidad positiva</span><span><i></i>Escala relativa</span></div>
+      </section>
+
+      <aside class="hero-side">
+        <div class="hero-side-card">
+          <div class="side-label">Caja y cobranza</div>
+          <div class="cash-layout">
+            <div class="cash-ring" style="--p:${cobroPct.toFixed(1)}%"><div class="cash-ring-inner"><b>${cobroPct.toFixed(0)}%</b><span>cobrado</span></div></div>
+            <div>
+              <div class="cash-value ${caja<0?'negative':''}">${moneyK(caja)}</div>
+              <div class="cash-note"><strong>Caja actual</strong><br>Cobrado ${moneyK(tot.cob)} menos pagado ${moneyK(tot.pag)}.</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-side-card">
+          <div class="side-label">Pendientes inmediatos</div>
+          <div class="side-split">
+            <div class="side-mini receivable"><span>Por cobrar</span><b>${moneyK(tot.pcob)}</b></div>
+            <div class="side-mini payable"><span>Por pagar</span><b>${moneyK(tot.ppag)}</b></div>
+          </div>
+          <div class="metric-line" style="margin-top:15px"><i style="--w:${cobroPct.toFixed(1)}%"></i></div>
+          <div class="metric-foot">Cobranza ejecutada: ${cobroPct.toFixed(1)}% del ingreso contratado</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="metric-strip">
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Ingreso contratado</span><span class="metric-pct">100%</span></div>
+        <div class="metric-value">${moneyK(tot.ing)}</div>
+        <div class="metric-line"><i style="--w:100%"></i></div><div class="metric-foot">Base contractual consolidada</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Cobrado</span><span class="metric-pct">${cobroPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(tot.cob)}</div>
+        <div class="metric-line"><i style="--w:${cobroPct.toFixed(1)}%"></i></div><div class="metric-foot">Ingreso que ya entró a caja</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Egreso comprometido</span><span class="metric-pct">${egrPct.toFixed(1)}% / ingreso</span></div>
+        <div class="metric-value">${moneyK(tot.egr)}</div>
+        <div class="metric-line red"><i style="--w:${egrPct.toFixed(1)}%"></i></div><div class="metric-foot">Costo total registrado</div>
+      </div>
+      <div class="metric-strip-card">
+        <div class="metric-top"><span class="metric-label">Pagado a terceros</span><span class="metric-pct">${pagoPct.toFixed(1)}%</span></div>
+        <div class="metric-value">${moneyK(tot.pag)}</div>
+        <div class="metric-line red"><i style="--w:${pagoPct.toFixed(1)}%"></i></div><div class="metric-foot">Avances ejecutados sobre egresos</div>
+      </div>
+    </div>
+
+    <div class="analysis-grid">
+      <section class="analysis-card">
+        <div class="analysis-head">
+          <div><div class="analysis-title">Resultado por proyecto</div><div class="analysis-copy">Comparación de contrato, costo y ganancia. La utilidad es el único acento dominante.</div></div>
+          <div class="legend-mini"><span><i></i>Ingreso</span><span><i></i>Egreso</span><span><i></i>Ganancia</span></div>
+        </div>
+        <div class="chart-box editorial"><canvas id="chResumen"></canvas></div>
+      </section>
+
+      <section class="analysis-card">
+        <div class="analysis-head"><div><div class="analysis-title">Participación en la utilidad</div><div class="analysis-copy">Peso relativo de cada proyecto dentro de la ganancia positiva total.</div></div></div>
+        <div class="donut-zone">
+          <div class="donut-wrap"><canvas id="chDona"></canvas><div class="donut-center"><b>${margen.toFixed(1)}%</b><span>margen total</span></div></div>
+          <div class="profit-rank">${rankHtml || '<div class="empty">Sin datos</div>'}</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="portfolio-card">
+      <div class="portfolio-head"><div class="portfolio-title">Portafolio de proyectos</div><div class="portfolio-note">Vista financiera consolidada · clic en Abrir para editar</div></div>
       <div class="twrap">
         <table>
           <thead><tr>
             <th>Proyecto</th><th>Tipo</th><th class="num">Ingreso</th><th class="num">Egreso</th>
-            <th class="num">Ganancia</th><th class="num">Margen</th><th class="num">Por Cobrar</th>
-            <th class="num">Por Pagar</th><th></th>
+            <th class="num">Ganancia</th><th class="num">Margen</th><th class="num">Por cobrar</th><th class="num">Por pagar</th><th></th>
           </tr></thead>
           <tbody>
-            ${proyectos.map(p=>{ const c=calc(p); return `<tr>
-              <td style="font-weight:700">${esc(p.nombre)}</td>
+            ${rows.map(({p,c},i)=>{ const mw=Math.max(3,Math.min(100,Math.abs(c.margen))); return `<tr>
+              <td><div class="project-cell"><span class="project-index">${String(i+1).padStart(2,'0')}</span><span class="project-name">${esc(p.nombre)}</span></div></td>
               <td><span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Supervisión':'Elaboración'}</span></td>
               <td class="num">${S(c.ingresoTotal)}</td>
-              <td class="num" style="color:var(--red)">${S(c.egresoTotal)}</td>
-              <td class="num" style="color:${c.ganancia>=0?'var(--green)':'var(--red)'};font-weight:800">${S(c.ganancia)}</td>
-              <td class="num">${c.margen.toFixed(1)}%</td>
-              <td class="num" style="color:var(--gold-light)">${S(c.porCobrar)}</td>
-              <td class="num" style="color:var(--red)">${S(c.porPagar)}</td>
+              <td class="num" style="color:rgba(214,135,123,.84)">${S(c.egresoTotal)}</td>
+              <td class="num" style="color:${c.ganancia>=0?'#a4c8ac':'#d6877b'};font-weight:800">${S(c.ganancia)}</td>
+              <td class="num"><div class="margin-cell"><span>${c.margen.toFixed(1)}%</span><span class="margin-mini"><i class="${c.margen<0?'bad':''}" style="--w:${mw}%"></i></span></div></td>
+              <td class="num" style="color:#d9b45e">${S(c.porCobrar)}</td>
+              <td class="num" style="color:#d6877b">${S(c.porPagar)}</td>
               <td><button class="btn btn-ghost btn-sm" onclick="go('${p.id}')">Abrir</button></td>
             </tr>`; }).join('')}
           </tbody>
           <tfoot><tr>
-            <td colspan="2">TOTAL</td>
-            <td class="num">${S(tot.ing)}</td>
-            <td class="num">${S(tot.egr)}</td>
-            <td class="num">${S(tot.gan)}</td>
-            <td class="num">${margen.toFixed(1)}%</td>
-            <td class="num">${S(tot.pcob)}</td>
-            <td class="num">${S(tot.ppag)}</td>
-            <td></td>
+            <td colspan="2">TOTAL</td><td class="num">${S(tot.ing)}</td><td class="num">${S(tot.egr)}</td><td class="num">${S(tot.gan)}</td>
+            <td class="num">${margen.toFixed(1)}%</td><td class="num">${S(tot.pcob)}</td><td class="num">${S(tot.ppag)}</td><td></td>
           </tr></tfoot>
         </table>
       </div>
-    </div>`;
+    </section>`;
 
-  // Gráficos
-  const labels = proyectos.map(p=>p.nombre);
+  // Gráfico principal: ingreso / egreso discretos, ganancia como acento VINARQ.
+  const labels=rows.map(r=>r.p.nombre);
   killChart('chResumen');
-  const cv = document.getElementById('chResumen');
-  if(cv) charts['chResumen'] = new Chart(cv,{type:'bar',
-    data:{labels,datasets:[
-      {label:'Ingreso',data:proyectos.map(p=>calc(p).ingresoTotal),backgroundColor:'rgba(250,180,30,0.72)',borderRadius:5},
-      {label:'Egreso',data:proyectos.map(p=>calc(p).egresoTotal),backgroundColor:'rgba(231,76,60,0.62)',borderRadius:5},
-      {label:'Ganancia',data:proyectos.map(p=>calc(p).ganancia),backgroundColor:'rgba(46,204,113,0.62)',borderRadius:5}]},
-    options:{...COPTS,scales:{
-      x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},
-      y:{ticks:{color:tc,font:{size:10},callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}}},
-      plugins:{...COPTS.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+S(c.raw)}}}}});
+  const cv=document.getElementById('chResumen');
+  if(cv) charts['chResumen']=new Chart(cv,{type:'bar',data:{labels,datasets:[
+    {label:'Ingreso',data:rows.map(r=>r.c.ingresoTotal),backgroundColor:'rgba(227,232,228,.11)',borderColor:'rgba(227,232,228,.16)',borderWidth:1,borderRadius:7,borderSkipped:false,maxBarThickness:28},
+    {label:'Egreso',data:rows.map(r=>r.c.egresoTotal),backgroundColor:'rgba(145,164,157,.26)',borderColor:'rgba(145,164,157,.30)',borderWidth:1,borderRadius:7,borderSkipped:false,maxBarThickness:28},
+    {label:'Ganancia',data:rows.map(r=>r.c.ganancia),backgroundColor:rows.map(r=>r.c.ganancia>=0?'rgba(250,180,30,.88)':'rgba(214,125,113,.82)'),borderColor:rows.map(r=>r.c.ganancia>=0?'rgba(255,203,83,.96)':'rgba(222,127,114,.96)'),borderWidth:1,borderRadius:7,borderSkipped:false,maxBarThickness:28}
+  ]},options:{...COPTS,interaction:{mode:'index',intersect:false},layout:{padding:{top:12}},scales:{
+    x:{border:{display:false},ticks:{color:'rgba(242,241,235,.38)',font:{size:9,weight:'600'},maxRotation:0,minRotation:0,callback:function(v){const s=this.getLabelForValue(v);return s.length>14?s.slice(0,13)+'…':s;}},grid:{display:false}},
+    y:{border:{display:false},ticks:{color:'rgba(242,241,235,.28)',font:{size:9},callback:v=>moneyK(v)},grid:{color:'rgba(255,255,255,.045)',drawTicks:false}}
+  },plugins:{legend:{display:false},datalabels:{display:false},tooltip:{backgroundColor:'rgba(11,15,17,.96)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f2f1eb',bodyColor:'rgba(242,241,235,.68)',padding:11,callbacks:{label:c=>c.dataset.label+': '+S(c.raw)}}}}});
 
-  const gan = proyectos.map(p=>Math.max(calc(p).ganancia,0));
-  const cols = ['#FAB41E','#2ECC71','#3498DB','#9B59B6','#E67E22','#1ABC9C','#E74C3C','#95A5A6'];
+  const doughRows=profitRows.filter(r=>r.c.ganancia>0);
+  const doughData=doughRows.length?doughRows.map(r=>r.c.ganancia):[1];
+  const doughLabels=doughRows.length?doughRows.map(r=>r.p.nombre):['Sin utilidad positiva'];
+  const cols=['#FAB41E','#a9c6a4','#829f8b','#d0b878','#7f9ca1','#b99270','#90afa2','#c38a7b'];
   killChart('chDona');
-  const cv2 = document.getElementById('chDona');
-  if(cv2) charts['chDona'] = new Chart(cv2,{type:'doughnut',
-    data:{labels,datasets:[{data:gan,backgroundColor:cols.slice(0,labels.length),borderWidth:2,borderColor:'#141414'}]},
-    options:{...COPTS,cutout:'58%',plugins:{...COPTS.plugins,
-      tooltip:{callbacks:{label:c=>c.label+': '+S(c.raw)}}}}});
+  const cv2=document.getElementById('chDona');
+  if(cv2) charts['chDona']=new Chart(cv2,{type:'doughnut',data:{labels:doughLabels,datasets:[{data:doughData,backgroundColor:doughRows.length?cols.slice(0,doughRows.length):['rgba(255,255,255,.06)'],borderWidth:0,hoverOffset:3,spacing:3}]},options:{responsive:true,maintainAspectRatio:false,cutout:'74%',plugins:{legend:{display:false},datalabels:{display:false},tooltip:{enabled:doughRows.length>0,backgroundColor:'rgba(11,15,17,.96)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f2f1eb',bodyColor:'rgba(242,241,235,.68)',callbacks:{label:c=>c.label+': '+S(c.raw)}}}}});
 }
 
 function kpi(l,v,cls,s){
@@ -1120,3 +1632,4 @@ async function seed(){
 </script>
 </body>
 </html>
+
