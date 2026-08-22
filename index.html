@@ -900,7 +900,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
     <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
     <div class="msg" id="aMsg"></div>
     <p class="hint" style="text-align:center">
-      <span style="cursor:pointer;color:var(--gold-light);text-decoration:underline" onclick="resetConfig()">Cambiar configuración de Firebase</span>
+      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ</span>
     </p>
   </div>
 </div>
@@ -968,14 +968,11 @@ window.guardarConfig = function(){
 }
 
 window.resetConfig = function(){
-  if(confirm('¿Borrar la configuración de Firebase y volver a ingresarla?')){
-    localStorage.removeItem(CFG_KEY);
-    location.reload();
-  }
+  alert('Firebase ya está integrado en esta versión de VINARQ. No necesitas configurarlo en cada dispositivo.');
 }
 </script>
 
-<!-- UI 2.4 PRO+ LITE: imágenes optimizadas e incrustadas para funcionar sin carpeta /images -->
+<!-- UI 2.5 PRO+ MOBILE: imágenes integradas + Firebase integrado para cualquier dispositivo -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
@@ -983,14 +980,18 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-/* ═══════════ ARRANQUE ═══════════ */
-const rawCfg = localStorage.getItem('vinarq_fb_cfg');
-if(!rawCfg){
-  document.getElementById('load').style.display='none';
-  document.getElementById('setupScreen').style.display='flex';
-  throw new Error('sin config');
-}
-const firebaseConfig = JSON.parse(rawCfg);
+/* ═══════════ ARRANQUE · FIREBASE INTEGRADO ═══════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBb1RloRIY2_yS8BhzV7MbGEtF5rigRtys",
+  authDomain: "vinarq-5c904.firebaseapp.com",
+  projectId: "vinarq-5c904",
+  storageBucket: "vinarq-5c904.firebasestorage.app",
+  messagingSenderId: "724839142934",
+  appId: "1:724839142934:web:2df4dd2c07886419008737"
+};
+// Mantiene una copia local por compatibilidad, pero ya no es necesaria para iniciar.
+try { localStorage.setItem('vinarq_fb_cfg', JSON.stringify(firebaseConfig)); } catch(e) {}
+document.getElementById('setupScreen').style.display='none';
 const fbApp = initializeApp(firebaseConfig);
 const auth  = getAuth(fbApp);
 const db    = getFirestore(fbApp);
