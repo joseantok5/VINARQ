@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>VINARQ · Gestión de Proyectos · UI 2.3 PRO</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -901,7 +904,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
     <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
     <div class="msg" id="aMsg"></div>
     <p class="hint" style="text-align:center">
-      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ</span>
+      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ · v2.5.2</span>
     </p>
   </div>
 </div>
@@ -981,14 +984,15 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-/* ═══════════ ARRANQUE · FIREBASE INTEGRADO ═══════════ */
+/* ═══════════ ARRANQUE · FIREBASE INTEGRADO · UI 2.5.2 ═══════════ */
 const firebaseConfig = {
-  apiKey: "AIzaSyBb1RloRIY2_yS8BhzV7MbGEtF5rigRtys",
+  apiKey: "AIzaSyBblRloRIY2_yS8BhZV7MbGEtF5rigRtys",
   authDomain: "vinarq-5c904.firebaseapp.com",
   projectId: "vinarq-5c904",
   storageBucket: "vinarq-5c904.firebasestorage.app",
   messagingSenderId: "724839142934",
-  appId: "1:724839142934:web:2df4dd2c07886419008737"
+  appId: "1:724839142934:web:2df4dd2c07886419008737",
+  measurementId: "G-MYX64GXK3G"
 };
 // Mantiene una copia local por compatibilidad, pero ya no es necesaria para iniciar.
 try { localStorage.setItem('vinarq_fb_cfg', JSON.stringify(firebaseConfig)); } catch(e) {}
