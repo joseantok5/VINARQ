@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VINARQ · Gestión de Proyectos</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap');
+:root{
+  --gold:#FAB41E; --gold-dark:#C08A0F; --gold-light:#FFCB53;
+  --ink:#141414; --ink-2:#1D1D1D; --ink-3:#262626;
+  --cream:#F5F1E8;
+  --green:#2ECC71; --red:#E74C3C; --blue:#3498DB; --purple:#9B59B6; --orange:#E67E22;
+  --border:rgba(250,180,30,0.22);
+  --glass:rgba(255,255,255,0.045);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--ink);color:var(--cream);font-family:'Nunito',sans-serif;min-height:100vh;
+  background-image:radial-gradient(ellipse at 8% 5%,rgba(250,180,30,0.07) 0%,transparent 55%),
+                   radial-gradient(ellipse at 92% 85%,rgba(250,180,30,0.04) 0%,transparent 55%);}
+
+/* ===== SCREENS ===== */
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:900;padding:20px;background:var(--ink);overflow-y:auto}
+.box{background:var(--glass);border:1px solid var(--border);border-radius:18px;padding:34px;width:100%;max-width:440px}
+.box.wide{max-width:620px}
+.brand{text-align:center;margin-bottom:24px}
+.brand-mark{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--ink);
+  font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;margin-bottom:10px}
+.brand h1{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;color:var(--gold);letter-spacing:3px;line-height:1}
+.brand span{font-size:0.68rem;color:rgba(245,241,232,0.45);text-transform:uppercase;letter-spacing:3px}
+.field{margin-bottom:14px;text-align:left}
+.field label{display:block;font-size:0.7rem;color:rgba(245,241,232,0.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-weight:700}
+input,select,textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:9px;
+  color:var(--cream);font-family:'Nunito',sans-serif;font-size:0.9rem;padding:10px 13px;outline:none;transition:border-color .18s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:rgba(250,180,30,0.08)}
+select option{background:var(--ink-3);color:var(--cream)}
+textarea{resize:vertical;min-height:110px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.8rem}
+
+.btn{padding:10px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;
+  font-size:0.85rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;transition:all .18s}
+.btn-primary{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:var(--ink)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(250,180,30,0.3)}
+.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--cream)}
+.btn-ghost:hover{background:rgba(250,180,30,0.12)}
+.btn-danger{background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.35);color:var(--red)}
+.btn-danger:hover{background:rgba(231,76,60,0.28)}
+.btn-green{background:rgba(46,204,113,0.14);border:1px solid rgba(46,204,113,0.32);color:var(--green)}
+.btn-green:hover{background:rgba(46,204,113,0.24)}
+.btn-sm{padding:5px 11px;font-size:0.72rem;letter-spacing:.5px}
+.btn-full{width:100%;padding:12px;font-size:0.95rem}
+.msg{font-size:0.8rem;margin-top:12px;display:none;padding:9px 12px;border-radius:8px}
+.msg.show{display:block}
+.msg.err{background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);color:var(--red)}
+.msg.ok{background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);color:var(--green)}
+.hint{font-size:0.74rem;color:rgba(245,241,232,0.4);margin-top:10px;line-height:1.6}
+.hint b{color:var(--gold-light)}
+
+/* ===== HEADER ===== */
+.header{background:linear-gradient(135deg,#1F1F1F 0%,var(--ink) 100%);border-bottom:2px solid var(--gold);
+  padding:11px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 26px rgba(250,180,30,0.14);flex-wrap:wrap;gap:10px}
+.hl{display:flex;align-items:center;gap:11px}
+.hl-mark{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+  color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.35rem}
+.hl h1{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--gold);letter-spacing:2.5px;line-height:1}
+.hl span{font-size:0.63rem;color:rgba(245,241,232,0.42);text-transform:uppercase;letter-spacing:2.5px}
+.hr-side{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.chip{background:rgba(250,180,30,0.13);border:1px solid var(--border);border-radius:8px;padding:5px 11px;
+  font-size:0.76rem;color:var(--gold-light);font-weight:700}
+.sync{background:rgba(52,152,219,0.09);border-bottom:1px solid rgba(52,152,219,0.18);padding:4px 22px;
+  font-size:0.7rem;color:rgba(52,152,219,0.85);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--blue);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ===== NAV ===== */
+.nav{display:flex;gap:4px;padding:10px 22px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{padding:9px 16px;border-radius:9px 9px 0 0;background:var(--glass);border:1px solid var(--border);border-bottom:none;
+  color:rgba(245,241,232,0.58);font-size:0.82rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;
+  font-family:'Nunito',sans-serif}
+.tab:hover{background:rgba(250,180,30,0.12);color:var(--gold-light)}
+.tab.active{background:rgba(250,180,30,0.17);color:var(--gold-light);border-color:var(--gold)}
+.tab.add{border-style:dashed;color:var(--green);border-color:rgba(46,204,113,0.35)}
+
+/* ===== SECTIONS ===== */
+.sec{display:none;padding:22px}
+.sec.active{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;color:var(--gold-light);letter-spacing:2px;
+  margin-bottom:16px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);min-width:30px}
+
+/* ===== CARDS ===== */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:var(--gold);
+  margin-bottom:13px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card-title .lbl{display:flex;align-items:center;gap:7px}
+
+/* ===== KPI ===== */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:15px;position:relative;overflow:hidden;transition:transform .18s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light))}
+.kpi .k-l{font-size:0.68rem;color:rgba(245,241,232,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.kpi .k-v{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;line-height:1;color:var(--cream)}
+.kpi .k-s{font-size:0.68rem;margin-top:3px;color:rgba(245,241,232,0.38)}
+.k-v.g{color:var(--green)} .k-v.r{color:var(--red)} .k-v.a{color:var(--gold-light)} .k-v.b{color:var(--blue)}
+.kpi .k-i{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:1.9rem;opacity:0.1}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:980px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* ===== TABLE ===== */
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:0.83rem}
+th{background:rgba(250,180,30,0.13);color:var(--gold);text-transform:uppercase;font-size:0.68rem;letter-spacing:1px;
+  padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid rgba(250,180,30,0.07);color:rgba(245,241,232,0.88);vertical-align:middle}
+tr:hover td{background:rgba(250,180,30,0.05)}
+tfoot td{background:rgba(250,180,30,0.08);font-weight:800;border-top:2px solid var(--gold);color:var(--gold-light)}
+td input,td select{padding:6px 9px;font-size:0.82rem;border-radius:7px}
+td input[type=number]{text-align:right}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ===== BADGES ===== */
+.bdg{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.68rem;font-weight:800;white-space:nowrap}
+.bdg.pagado{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.32)}
+.bdg.pend{background:rgba(231,76,60,0.13);color:var(--red);border:1px solid rgba(231,76,60,0.3)}
+.bdg.sup{background:rgba(52,152,219,0.14);color:var(--blue);border:1px solid rgba(52,152,219,0.3)}
+.bdg.ela{background:rgba(230,126,34,0.14);color:var(--orange);border:1px solid rgba(230,126,34,0.3)}
+
+/* ===== PROGRESS ===== */
+.pw{margin:6px 0}
+.pl{display:flex;justify-content:space-between;font-size:0.76rem;margin-bottom:4px;color:rgba(245,241,232,0.72);gap:10px}
+.pb{height:8px;background:rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+.pf{height:100%;border-radius:10px;transition:width .7s ease}
+
+.chart-box{position:relative;height:250px}
+.sep{height:1px;background:var(--border);margin:16px 0}
+.empty{text-align:center;padding:34px;color:rgba(245,241,232,0.32)}
+.empty .e-i{font-size:2.4rem;margin-bottom:8px}
+.tip{font-size:0.73rem;color:rgba(245,241,232,0.38);margin-top:8px;line-height:1.6}
+.mb0{margin-bottom:0}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:4px}
+
+/* ===== MODAL ===== */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.78);z-index:600;display:none;align-items:center;justify-content:center;padding:18px}
+.ov.show{display:flex}
+.modal{background:var(--ink-2);border:1px solid var(--border);border-radius:16px;padding:26px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--gold-light);letter-spacing:2px;
+  margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* ===== LOADER ===== */
+#load{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;
+  z-index:2000;flex-direction:column;gap:15px}
+.spin{width:38px;height:38px;border:3px solid rgba(250,180,30,0.18);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ldt{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--gold);letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<div id="load">
+  <div class="brand-mark">V</div>
+  <div class="spin"></div>
+  <div class="ldt">Cargando…</div>
+</div>
+
+<!-- ══ SETUP FIREBASE ══ -->
+<div class="screen" id="setupScreen" style="display:none">
+  <div class="box wide">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <h1>VINARQ</h1>
+      <span>Configuración inicial</span>
+    </div>
+    <p class="hint mb0" style="margin-bottom:16px">
+      Pega aquí el <b>firebaseConfig</b> de tu proyecto de Firebase. Lo encuentras en:
+      Consola Firebase → ⚙️ Configuración del proyecto → Tus aplicaciones → <b>&lt;/&gt;</b> Web.
+    </p>
+    <div class="field">
+      <label>firebaseConfig</label>
+      <textarea id="cfgInput" placeholder='const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "vinarq-xxxx.firebaseapp.com",
+  projectId: "vinarq-xxxx",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};'></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="guardarConfig()">Conectar con Firebase</button>
+    <div class="msg" id="cfgMsg"></div>
+    <p class="hint">
+      Recuerda activar en Firebase: <b>Authentication</b> (Email/Password) y <b>Firestore Database</b>
+      (modo prueba). Y en Authentication → Settings → Authorized domains, agrega el dominio donde
+      subas esta app.
+    </p>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div class="screen" id="authScreen" style="display:none">
+  <div class="box">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <h1>VINARQ</h1>
+      <span>Gestión de Proyectos</span>
+    </div>
+    <div class="field">
+      <label>Correo electrónico</label>
+      <input type="email" id="aEmail" placeholder="tu@correo.com">
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="aPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
+    <div class="msg" id="aMsg"></div>
+    <p class="hint" style="text-align:center">
+      <span style="cursor:pointer;color:var(--gold-light);text-decoration:underline" onclick="resetConfig()">Cambiar configuración de Firebase</span>
+    </p>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none">
+  <header class="header">
+    <div class="hl">
+      <div class="hl-mark">V</div>
+      <div>
+        <h1>VINARQ</h1>
+        <span>Consultores · Constructores · Asesores</span>
+      </div>
+    </div>
+    <div class="hr-side">
+      <div style="text-align:right">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--gold)" id="hDate">—</div>
+        <div style="font-size:0.68rem;color:rgba(245,241,232,0.42)" id="hTime">—</div>
+      </div>
+      <div class="chip" id="hUser">—</div>
+      <button class="btn btn-danger btn-sm" onclick="doLogout()">Salir</button>
+    </div>
+  </header>
+
+  <div class="sync"><div class="dot"></div><span>Conectado a Firebase · <span id="syncTxt">Sincronizando…</span></span></div>
+
+  <nav class="nav" id="nav"></nav>
+  <div id="secs"></div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="ov" id="ov">
+  <div class="modal">
+    <h3><span id="mTitle">—</span><button class="btn btn-danger btn-sm" onclick="closeModal()">Cerrar</button></h3>
+    <div id="mBody"></div>
+    <div class="msg" id="mMsg"></div>
+    <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="mSave">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════ CONFIG FIREBASE (localStorage) ═══════════ */
+const CFG_KEY = 'vinarq_fb_cfg';
+
+window.guardarConfig = function(){
+  const raw = document.getElementById('cfgInput').value.trim();
+  const m = document.getElementById('cfgMsg');
+  try{
+    // Extrae el objeto { ... } del texto pegado
+    const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if(s < 0 || e < 0) throw new Error('No se encontró el objeto de configuración');
+    let obj = raw.slice(s, e+1);
+    // Convierte claves sin comillas a JSON válido
+    obj = obj.replace(/([{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, '$1"$2":').replace(/'/g,'"').replace(/,\s*}/g,'}');
+    const cfg = JSON.parse(obj);
+    if(!cfg.apiKey || !cfg.projectId) throw new Error('Falta apiKey o projectId');
+    localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+    m.className='msg ok show'; m.textContent='Configuración guardada. Recargando…';
+    setTimeout(()=>location.reload(), 900);
+  }catch(err){
+    m.className='msg err show'; m.textContent='No se pudo leer la configuración: '+err.message;
+  }
+}
+
+window.resetConfig = function(){
+  if(confirm('¿Borrar la configuración de Firebase y volver a ingresarla?')){
+    localStorage.removeItem(CFG_KEY);
+    location.reload();
+  }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, getDocs }
+  from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+/* ═══════════ ARRANQUE ═══════════ */
+const rawCfg = localStorage.getItem('vinarq_fb_cfg');
+if(!rawCfg){
+  document.getElementById('load').style.display='none';
+  document.getElementById('setupScreen').style.display='flex';
+  throw new Error('sin config');
+}
+const firebaseConfig = JSON.parse(rawCfg);
+const fbApp = initializeApp(firebaseConfig);
+const auth  = getAuth(fbApp);
+const db    = getFirestore(fbApp);
+if(window.ChartDataLabels) Chart.register(ChartDataLabels);
+
+/* ═══════════ ESTADO ═══════════ */
+let user = null;
+let proyectos = [];      // [{id, ...datos}]
+let unsub = null;
+let activeTab = 'resumen';
+const charts = {};
+
+/* ═══════════ HELPERS ═══════════ */
+const S = n => 'S/ ' + Number(n||0).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2,10);
+
+function killChart(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+const tc = 'rgba(245,241,232,0.42)', gc = 'rgba(250,180,30,0.09)';
+const COPTS = {responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'rgba(245,241,232,0.72)',font:{size:11}}},datalabels:{display:false}}};
+
+/* ═══════════ CÁLCULOS DE PROYECTO ═══════════ */
+function calc(p){
+  const r = {ingresoTotal:0, cobrado:0, porCobrar:0, egresoTotal:0, pagado:0, porPagar:0, ganancia:0, margen:0};
+
+  // Ingresos (cobros al cliente)
+  (p.cobros||[]).forEach(grupo=>{
+    (grupo.items||[]).forEach(it=>{
+      const m = num(it.monto);
+      r.ingresoTotal += m;
+      if(it.estado === 'PAGADO') r.cobrado += m; else r.porCobrar += m;
+    });
+  });
+  // Si hay costoTotal declarado y no hay cobros, usarlo como referencia
+  if(r.ingresoTotal === 0) r.ingresoTotal = num(p.costoTotal);
+
+  // Egresos (lo que VINARQ paga)
+  (p.egresos||[]).forEach(grupo=>{
+    (grupo.items||[]).forEach(it=>{
+      const m = num(it.monto);
+      const a1 = num(it.adelanto1), a2 = num(it.adelanto2);
+      r.egresoTotal += m;
+      const ya = Math.min(a1+a2, m);
+      r.pagado += ya;
+      r.porPagar += Math.max(m - ya, 0);
+    });
+  });
+
+  r.ganancia = r.ingresoTotal - r.egresoTotal;
+  r.margen = r.ingresoTotal > 0 ? (r.ganancia / r.ingresoTotal * 100) : 0;
+  r.caja = r.cobrado - r.pagado;
+  return r;
+}
+
+/* ═══════════ AUTH ═══════════ */
+window.doLogin = async function(){
+  const m = document.getElementById('aMsg'); m.className='msg';
+  try{
+    await signInWithEmailAndPassword(auth,
+      document.getElementById('aEmail').value.trim(),
+      document.getElementById('aPass').value);
+  }catch(e){
+    m.className='msg err show';
+    m.textContent = e.code==='auth/invalid-credential' ? 'Correo o contraseña incorrectos' : e.message;
+  }
+}
+window.doLogout = async function(){ if(unsub) unsub(); await signOut(auth); }
+
+onAuthStateChanged(auth, u=>{
+  document.getElementById('load').style.display='none';
+  if(u){
+    user = u;
+    document.getElementById('authScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('hUser').textContent = u.email.split('@')[0];
+    listen(); tick();
+  }else{
+    user = null;
+    document.getElementById('app').style.display='none';
+    document.getElementById('authScreen').style.display='flex';
+  }
+});
+
+function tick(){
+  if(!user) return;
+  const n = new Date();
+  const D=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const M=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  document.getElementById('hDate').textContent = `${D[n.getDay()]}, ${n.getDate()} ${M[n.getMonth()]} ${n.getFullYear()}`;
+  document.getElementById('hTime').textContent = n.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  setTimeout(tick,1000);
+}
+
+/* ═══════════ FIRESTORE ═══════════ */
+function listen(){
+  if(unsub) unsub();
+  unsub = onSnapshot(collection(db,'proyectos'), async snap=>{
+    proyectos = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    proyectos.sort((a,b)=>(a.orden||0)-(b.orden||0));
+    document.getElementById('syncTxt').textContent =
+      `${proyectos.length} proyectos · ${new Date().toLocaleTimeString('es-PE')}`;
+    if(proyectos.length === 0){ await seed(); return; }
+    render();
+  }, err=>{
+    document.getElementById('syncTxt').textContent = 'Error: '+err.message;
+  });
+}
+
+async function guardar(p){
+  const {id, ...data} = p;
+  await setDoc(doc(db,'proyectos',id), data);
+}
+
+/* ═══════════ RENDER GENERAL ═══════════ */
+function render(){
+  // NAV
+  const nav = document.getElementById('nav');
+  let tabs = `<div class="tab ${activeTab==='resumen'?'active':''}" onclick="go('resumen')">Resumen General</div>`;
+  proyectos.forEach(p=>{
+    tabs += `<div class="tab ${activeTab===p.id?'active':''}" onclick="go('${p.id}')">${esc(p.nombre)}</div>`;
+  });
+  tabs += `<div class="tab ${activeTab==='finanzas'?'active':''}" onclick="go('finanzas')">Finanzas Consolidadas</div>`;
+  tabs += `<div class="tab add" onclick="nuevoProyecto()">+ Nuevo Proyecto</div>`;
+  nav.innerHTML = tabs;
+
+  // SECCIONES
+  const secs = document.getElementById('secs');
+  let html = `<div class="sec ${activeTab==='resumen'?'active':''}" id="sec-resumen"></div>`;
+  proyectos.forEach(p=>{
+    html += `<div class="sec ${activeTab===p.id?'active':''}" id="sec-${p.id}"></div>`;
+  });
+  html += `<div class="sec ${activeTab==='finanzas'?'active':''}" id="sec-finanzas"></div>`;
+  secs.innerHTML = html;
+
+  if(activeTab==='resumen') renderResumen();
+  else if(activeTab==='finanzas') renderFinanzas();
+  else { const p = proyectos.find(x=>x.id===activeTab); if(p) renderProyecto(p); else { activeTab='resumen'; render(); } }
+}
+
+window.go = function(tab){ activeTab = tab; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* ═══════════ RESUMEN GENERAL ═══════════ */
+function renderResumen(){
+  const el = document.getElementById('sec-resumen');
+  if(!el) return;
+  const tot = {ing:0,egr:0,gan:0,cob:0,pcob:0,pag:0,ppag:0};
+  proyectos.forEach(p=>{ const c=calc(p);
+    tot.ing+=c.ingresoTotal; tot.egr+=c.egresoTotal; tot.gan+=c.ganancia;
+    tot.cob+=c.cobrado; tot.pcob+=c.porCobrar; tot.pag+=c.pagado; tot.ppag+=c.porPagar; });
+  const margen = tot.ing>0 ? (tot.gan/tot.ing*100) : 0;
+  const nSup = proyectos.filter(p=>p.tipo==='supervision').length;
+  const nEla = proyectos.filter(p=>p.tipo==='elaboracion').length;
+
+  el.innerHTML = `
+    <div class="sec-title">Resumen General</div>
+    <div class="kpis">
+      ${kpi('Ingreso Contratado', S(tot.ing), 'a', `${proyectos.length} proyectos`)}
+      ${kpi('Egreso Comprometido', S(tot.egr), 'r', '')}
+      ${kpi('Ganancia Proyectada', S(tot.gan), tot.gan>=0?'g':'r', `Margen ${margen.toFixed(1)}%`)}
+      ${kpi('Ya Cobrado', S(tot.cob), 'g', '')}
+      ${kpi('Por Cobrar', S(tot.pcob), 'a', '')}
+      ${kpi('Por Pagar', S(tot.ppag), 'r', '')}
+      ${kpi('Caja Actual', S(tot.cob-tot.pag), (tot.cob-tot.pag)>=0?'g':'r', 'Cobrado − Pagado')}
+      ${kpi('Tipos', `${nSup} / ${nEla}`, 'b', 'Supervisión / Elaboración')}
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title"><span class="lbl">Ingreso vs Egreso vs Ganancia por Proyecto</span></div>
+        <div class="chart-box" style="height:300px"><canvas id="chResumen"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="lbl">Participación en la Ganancia Total</span></div>
+        <div class="chart-box" style="height:300px"><canvas id="chDona"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="lbl">Todos los Proyectos</span></div>
+      <div class="twrap">
+        <table>
+          <thead><tr>
+            <th>Proyecto</th><th>Tipo</th><th class="num">Ingreso</th><th class="num">Egreso</th>
+            <th class="num">Ganancia</th><th class="num">Margen</th><th class="num">Por Cobrar</th>
+            <th class="num">Por Pagar</th><th></th>
+          </tr></thead>
+          <tbody>
+            ${proyectos.map(p=>{ const c=calc(p); return `<tr>
+              <td style="font-weight:700">${esc(p.nombre)}</td>
+              <td><span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Supervisión':'Elaboración'}</span></td>
+              <td class="num">${S(c.ingresoTotal)}</td>
+              <td class="num" style="color:var(--red)">${S(c.egresoTotal)}</td>
+              <td class="num" style="color:${c.ganancia>=0?'var(--green)':'var(--red)'};font-weight:800">${S(c.ganancia)}</td>
+              <td class="num">${c.margen.toFixed(1)}%</td>
+              <td class="num" style="color:var(--gold-light)">${S(c.porCobrar)}</td>
+              <td class="num" style="color:var(--red)">${S(c.porPagar)}</td>
+              <td><button class="btn btn-ghost btn-sm" onclick="go('${p.id}')">Abrir</button></td>
+            </tr>`; }).join('')}
+          </tbody>
+          <tfoot><tr>
+            <td colspan="2">TOTAL</td>
+            <td class="num">${S(tot.ing)}</td>
+            <td class="num">${S(tot.egr)}</td>
+            <td class="num">${S(tot.gan)}</td>
+            <td class="num">${margen.toFixed(1)}%</td>
+            <td class="num">${S(tot.pcob)}</td>
+            <td class="num">${S(tot.ppag)}</td>
+            <td></td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </div>`;
+
+  // Gráficos
+  const labels = proyectos.map(p=>p.nombre);
+  killChart('chResumen');
+  const cv = document.getElementById('chResumen');
+  if(cv) charts['chResumen'] = new Chart(cv,{type:'bar',
+    data:{labels,datasets:[
+      {label:'Ingreso',data:proyectos.map(p=>calc(p).ingresoTotal),backgroundColor:'rgba(250,180,30,0.72)',borderRadius:5},
+      {label:'Egreso',data:proyectos.map(p=>calc(p).egresoTotal),backgroundColor:'rgba(231,76,60,0.62)',borderRadius:5},
+      {label:'Ganancia',data:proyectos.map(p=>calc(p).ganancia),backgroundColor:'rgba(46,204,113,0.62)',borderRadius:5}]},
+    options:{...COPTS,scales:{
+      x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},
+      y:{ticks:{color:tc,font:{size:10},callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}}},
+      plugins:{...COPTS.plugins,tooltip:{callbacks:{label:c=>c.dataset.label+': '+S(c.raw)}}}}});
+
+  const gan = proyectos.map(p=>Math.max(calc(p).ganancia,0));
+  const cols = ['#FAB41E','#2ECC71','#3498DB','#9B59B6','#E67E22','#1ABC9C','#E74C3C','#95A5A6'];
+  killChart('chDona');
+  const cv2 = document.getElementById('chDona');
+  if(cv2) charts['chDona'] = new Chart(cv2,{type:'doughnut',
+    data:{labels,datasets:[{data:gan,backgroundColor:cols.slice(0,labels.length),borderWidth:2,borderColor:'#141414'}]},
+    options:{...COPTS,cutout:'58%',plugins:{...COPTS.plugins,
+      tooltip:{callbacks:{label:c=>c.label+': '+S(c.raw)}}}}});
+}
+
+function kpi(l,v,cls,s){
+  return `<div class="kpi"><div class="k-l">${l}</div><div class="k-v ${cls||''}">${v}</div><div class="k-s">${s||''}</div></div>`;
+}
+
+/* ═══════════ PROYECTO INDIVIDUAL ═══════════ */
+function renderProyecto(p){
+  const el = document.getElementById('sec-'+p.id);
+  if(!el) return;
+  const c = calc(p);
+
+  el.innerHTML = `
+    <div class="sec-title">
+      ${esc(p.nombre)}
+      <span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Supervisión':'Elaboración'}</span>
+      <button class="btn btn-ghost btn-sm" onclick="editarProyecto('${p.id}')">Editar nombre</button>
+      <button class="btn btn-danger btn-sm" onclick="borrarProyecto('${p.id}')">Eliminar proyecto</button>
+    </div>
+
+    <div class="kpis">
+      ${kpi('Monto del Contrato', S(c.ingresoTotal), 'a', 'Total a cobrar')}
+      ${kpi('Egreso Total', S(c.egresoTotal), 'r', 'Todo lo que se paga')}
+      ${kpi('Ganancia', S(c.ganancia), c.ganancia>=0?'g':'r', `Margen ${c.margen.toFixed(1)}%`)}
+      ${kpi('Cobrado', S(c.cobrado), 'g', '')}
+      ${kpi('Por Cobrar', S(c.porCobrar), 'a', '')}
+      ${kpi('Pagado', S(c.pagado), 'b', '')}
+      ${kpi('Por Pagar', S(c.porPagar), 'r', '')}
+      ${kpi('Caja del Proyecto', S(c.caja), c.caja>=0?'g':'r', 'Cobrado − Pagado')}
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title"><span class="lbl">Avance Económico</span></div>
+        <div class="pw">
+          <div class="pl"><span>Cobrado del contrato</span><span>${S(c.cobrado)} / ${S(c.ingresoTotal)}</span></div>
+          <div class="pb"><div class="pf" style="width:${c.ingresoTotal>0?Math.min(100,c.cobrado/c.ingresoTotal*100):0}%;background:linear-gradient(90deg,#C08A0F,#FAB41E)"></div></div>
+        </div>
+        <div class="pw">
+          <div class="pl"><span>Pagado del egreso</span><span>${S(c.pagado)} / ${S(c.egresoTotal)}</span></div>
+          <div class="pb"><div class="pf" style="width:${c.egresoTotal>0?Math.min(100,c.pagado/c.egresoTotal*100):0}%;background:linear-gradient(90deg,#C0392B,#E74C3C)"></div></div>
+        </div>
+        <div class="sep"></div>
+        <div style="text-align:center">
+          <div style="font-size:0.66rem;color:rgba(245,241,232,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Margen del proyecto</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:${c.margen>=30?'var(--green)':c.margen>=10?'var(--gold-light)':'var(--red)'}">${c.margen.toFixed(1)}%</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="lbl">Composición del Contrato</span></div>
+        <div class="chart-box"><canvas id="ch-${p.id}"></canvas></div>
+      </div>
+    </div>
+
+    ${(p.cobros||[]).map((g,gi)=>bloqueCobro(p,g,gi)).join('')}
+    ${(p.egresos||[]).map((g,gi)=>bloqueEgreso(p,g,gi)).join('')}
+
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="btn btn-green btn-sm" onclick="addGrupo('${p.id}','cobros')">+ Nuevo bloque de cobros</button>
+      <button class="btn btn-green btn-sm" onclick="addGrupo('${p.id}','egresos')">+ Nuevo bloque de egresos</button>
+    </div>`;
+
+  // Gráfico composición
+  killChart('ch-'+p.id);
+  const cv = document.getElementById('ch-'+p.id);
+  const labs=[], vals=[];
+  (p.egresos||[]).forEach(g=>{ const t=(g.items||[]).reduce((s,i)=>s+num(i.monto),0); if(t>0){labs.push(g.titulo); vals.push(t);} });
+  if(c.ganancia>0){ labs.push('Ganancia'); vals.push(c.ganancia); }
+  const colores = ['#E74C3C','#E67E22','#9B59B6','#3498DB','#1ABC9C','#95A5A6','#2ECC71'];
+  if(cv && vals.length) charts['ch-'+p.id] = new Chart(cv,{type:'doughnut',
+    data:{labels:labs,datasets:[{data:vals,
+      backgroundColor:labs.map((l,i)=> l==='Ganancia' ? '#2ECC71' : colores[i%colores.length]),
+      borderWidth:2,borderColor:'#141414'}]},
+    options:{...COPTS,cutout:'56%',plugins:{...COPTS.plugins,
+      tooltip:{callbacks:{label:x=>x.label+': '+S(x.raw)}}}}});
+}
+
+/* ── Bloque de COBROS (lo que nos pagan) ── */
+function bloqueCobro(p,g,gi){
+  const items = g.items||[];
+  const total = items.reduce((s,i)=>s+num(i.monto),0);
+  const pagado = items.filter(i=>i.estado==='PAGADO').reduce((s,i)=>s+num(i.monto),0);
+  return `
+  <div class="card">
+    <div class="card-title">
+      <span class="lbl">▸ ${esc(g.titulo)} <span style="color:rgba(245,241,232,0.4);font-size:0.75rem;font-family:Nunito">(cobros)</span></span>
+      <span style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','cobros',${gi})">+ Fila</button>
+        <button class="btn btn-ghost btn-sm" onclick="renombrarGrupo('${p.id}','cobros',${gi})">Renombrar</button>
+        <button class="btn btn-danger btn-sm" onclick="delGrupo('${p.id}','cobros',${gi})">Borrar bloque</button>
+      </span>
+    </div>
+    <div class="twrap">
+      <table>
+        <thead><tr><th style="width:45%">Descripción</th><th class="num" style="width:20%">Monto (S/)</th><th style="width:22%">Estado</th><th style="width:13%"></th></tr></thead>
+        <tbody>
+          ${items.map((it,ii)=>`<tr>
+            <td><input value="${esc(it.desc)}" onchange="setItem('${p.id}','cobros',${gi},${ii},'desc',this.value)"></td>
+            <td><input type="number" step="0.01" value="${num(it.monto)}" onchange="setItem('${p.id}','cobros',${gi},${ii},'monto',this.value)"></td>
+            <td><select onchange="setItem('${p.id}','cobros',${gi},${ii},'estado',this.value)">
+                <option value="SIN PAGAR" ${it.estado!=='PAGADO'?'selected':''}>SIN PAGAR</option>
+                <option value="PAGADO" ${it.estado==='PAGADO'?'selected':''}>PAGADO</option>
+              </select></td>
+            <td><button class="btn btn-danger btn-sm" onclick="delItem('${p.id}','cobros',${gi},${ii})">✕</button></td>
+          </tr>`).join('') || `<tr><td colspan="4" style="text-align:center;color:rgba(245,241,232,0.3);padding:16px">Sin filas — usa "+ Fila"</td></tr>`}
+        </tbody>
+        <tfoot><tr>
+          <td>TOTAL · cobrado ${S(pagado)}</td>
+          <td class="num">${S(total)}</td>
+          <td colspan="2">${total>0?(pagado/total*100).toFixed(0):0}% cobrado</td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>`;
+}
+
+/* ── Bloque de EGRESOS (lo que pagamos) ── */
+function bloqueEgreso(p,g,gi){
+  const items = g.items||[];
+  const cols = g.columnas || 'full';   // 'full' = con adelantos | 'simple' = solo monto
+  const tM = items.reduce((s,i)=>s+num(i.monto),0);
+  const tA1 = items.reduce((s,i)=>s+num(i.adelanto1),0);
+  const tA2 = items.reduce((s,i)=>s+num(i.adelanto2),0);
+  const tS  = items.reduce((s,i)=>s+Math.max(num(i.monto)-num(i.adelanto1)-num(i.adelanto2),0),0);
+  const full = cols === 'full';
+
+  return `
+  <div class="card">
+    <div class="card-title">
+      <span class="lbl">▸ ${esc(g.titulo)} <span style="color:rgba(245,241,232,0.4);font-size:0.75rem;font-family:Nunito">(egresos)</span></span>
+      <span style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','egresos',${gi})">+ Fila</button>
+        <button class="btn btn-ghost btn-sm" onclick="toggleCols('${p.id}',${gi})">${full?'Ocultar adelantos':'Mostrar adelantos'}</button>
+        <button class="btn btn-ghost btn-sm" onclick="renombrarGrupo('${p.id}','egresos',${gi})">Renombrar</button>
+        <button class="btn btn-danger btn-sm" onclick="delGrupo('${p.id}','egresos',${gi})">Borrar bloque</button>
+      </span>
+    </div>
+    <div class="twrap">
+      <table>
+        <thead><tr>
+          <th>Especialidad / Concepto</th><th>Nombre / Empresa</th>
+          <th class="num">Monto</th>
+          ${full?'<th class="num">Adelanto 1</th><th class="num">Adelanto 2</th><th class="num">Saldo</th>':''}
+          <th></th>
+        </tr></thead>
+        <tbody>
+          ${items.map((it,ii)=>{
+            const saldo = Math.max(num(it.monto)-num(it.adelanto1)-num(it.adelanto2),0);
+            return `<tr>
+              <td><input value="${esc(it.especialidad)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'especialidad',this.value)"></td>
+              <td><input value="${esc(it.nombre)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'nombre',this.value)"></td>
+              <td><input type="number" step="0.01" value="${num(it.monto)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'monto',this.value)"></td>
+              ${full?`
+              <td><input type="number" step="0.01" value="${num(it.adelanto1)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto1',this.value)"></td>
+              <td><input type="number" step="0.01" value="${num(it.adelanto2)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto2',this.value)"></td>
+              <td class="num" style="color:${saldo>0?'var(--red)':'var(--green)'};font-weight:700">${S(saldo)}</td>`:''}
+              <td><button class="btn btn-danger btn-sm" onclick="delItem('${p.id}','egresos',${gi},${ii})">✕</button></td>
+            </tr>`;}).join('') || `<tr><td colspan="${full?7:4}" style="text-align:center;color:rgba(245,241,232,0.3);padding:16px">Sin filas — usa "+ Fila"</td></tr>`}
+        </tbody>
+        <tfoot><tr>
+          <td colspan="2">TOTAL</td>
+          <td class="num">${S(tM)}</td>
+          ${full?`<td class="num">${S(tA1)}</td><td class="num">${S(tA2)}</td><td class="num">${S(tS)}</td>`:''}
+          <td></td>
+        </tr></tfoot>
+      </table>
+    </div>
+  </div>`;
+}
+
+/* ═══════════ EDICIÓN ═══════════ */
+window.setItem = async function(pid,tipo,gi,ii,campo,val){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  p[tipo][gi].items[ii][campo] = (campo==='monto'||campo.startsWith('adelanto')) ? num(val) : val;
+  await guardar(p);
+}
+window.addItem = async function(pid,tipo,gi){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  p[tipo][gi].items = p[tipo][gi].items || [];
+  p[tipo][gi].items.push(tipo==='cobros'
+    ? {desc:'Nuevo cobro', monto:0, estado:'SIN PAGAR'}
+    : {especialidad:'Nuevo concepto', nombre:'', monto:0, adelanto1:0, adelanto2:0});
+  await guardar(p);
+}
+window.delItem = async function(pid,tipo,gi,ii){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  if(!confirm('¿Eliminar esta fila?')) return;
+  p[tipo][gi].items.splice(ii,1);
+  await guardar(p);
+}
+window.addGrupo = async function(pid,tipo){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  const t = prompt(tipo==='cobros' ? 'Nombre del bloque de cobros:' : 'Nombre del bloque de egresos:');
+  if(!t) return;
+  p[tipo] = p[tipo] || [];
+  p[tipo].push(tipo==='cobros' ? {titulo:t, items:[]} : {titulo:t, columnas:'full', items:[]});
+  await guardar(p);
+}
+window.delGrupo = async function(pid,tipo,gi){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  if(!confirm('¿Eliminar el bloque completo y todas sus filas?')) return;
+  p[tipo].splice(gi,1);
+  await guardar(p);
+}
+window.renombrarGrupo = async function(pid,tipo,gi){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  const t = prompt('Nuevo nombre del bloque:', p[tipo][gi].titulo);
+  if(!t) return;
+  p[tipo][gi].titulo = t;
+  await guardar(p);
+}
+window.toggleCols = async function(pid,gi){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  p.egresos[gi].columnas = (p.egresos[gi].columnas||'full')==='full' ? 'simple' : 'full';
+  await guardar(p);
+}
+window.editarProyecto = async function(pid){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  const n = prompt('Nombre del proyecto:', p.nombre);
+  if(!n) return;
+  p.nombre = n;
+  await guardar(p);
+}
+window.borrarProyecto = async function(pid){
+  const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  if(!confirm(`¿Eliminar el proyecto "${p.nombre}" con todos sus datos?\n\nEsta acción no se puede deshacer.`)) return;
+  await deleteDoc(doc(db,'proyectos',pid));
+  activeTab = 'resumen';
+}
+window.nuevoProyecto = async function(){
+  const nombre = prompt('Nombre del nuevo proyecto:');
+  if(!nombre) return;
+  const tipo = confirm('¿Es un proyecto de SUPERVISIÓN?\n\nAceptar = Supervisión\nCancelar = Elaboración')
+    ? 'supervision' : 'elaboracion';
+  const id = 'p_'+uid();
+  const base = tipo==='supervision'
+    ? {nombre, tipo, orden: proyectos.length+1,
+       cobros:[{titulo:'DOCUMENTO EQUIVALENTE',items:[]},{titulo:'EJECUCIÓN FÍSICA',items:[]}],
+       egresos:[{titulo:'PERSONAL QUE FIRMA',columnas:'simple',items:[]},{titulo:'PERSONAL QUE ELABORA',columnas:'simple',items:[]}]}
+    : {nombre, tipo, orden: proyectos.length+1,
+       cobros:[{titulo:'PAGOS DEL CLIENTE',items:[]}],
+       egresos:[{titulo:'PERSONAL QUE ELABORA',columnas:'full',items:[]},
+                {titulo:'ESTUDIOS BÁSICOS',columnas:'full',items:[]},
+                {titulo:'GASTOS DE OFICINA',columnas:'simple',items:[]}]};
+  await setDoc(doc(db,'proyectos',id), base);
+  activeTab = id;
+}
+
+/* ═══════════ FINANZAS CONSOLIDADAS ═══════════ */
+function renderFinanzas(){
+  const el = document.getElementById('sec-finanzas');
+  if(!el) return;
+  const rows = proyectos.map(p=>({p, c:calc(p)}));
+  const T = rows.reduce((a,{c})=>({
+    ing:a.ing+c.ingresoTotal, egr:a.egr+c.egresoTotal, gan:a.gan+c.ganancia,
+    cob:a.cob+c.cobrado, pcob:a.pcob+c.porCobrar, pag:a.pag+c.pagado, ppag:a.ppag+c.porPagar
+  }),{ing:0,egr:0,gan:0,cob:0,pcob:0,pag:0,ppag:0});
+  const margen = T.ing>0 ? (T.gan/T.ing*100) : 0;
+
+  // Ganancia por tipo
+  const sup = rows.filter(r=>r.p.tipo==='supervision').reduce((s,r)=>s+r.c.ganancia,0);
+  const ela = rows.filter(r=>r.p.tipo==='elaboracion').reduce((s,r)=>s+r.c.ganancia,0);
+
+  // Egresos por categoría (títulos de bloques)
+  const porCat = {};
+  proyectos.forEach(p=>(p.egresos||[]).forEach(g=>{
+    const t=(g.items||[]).reduce((s,i)=>s+num(i.monto),0);
+    if(t>0) porCat[g.titulo]=(porCat[g.titulo]||0)+t;
+  }));
+  const catKeys = Object.keys(porCat).sort((a,b)=>porCat[b]-porCat[a]);
+
+  el.innerHTML = `
+    <div class="sec-title">Finanzas Consolidadas</div>
+
+    <div class="kpis">
+      ${kpi('Ingreso Total Contratado', S(T.ing), 'a', `${proyectos.length} proyectos`)}
+      ${kpi('Egreso Total', S(T.egr), 'r', '')}
+      ${kpi('GANANCIA TOTAL', S(T.gan), T.gan>=0?'g':'r', `Margen ${margen.toFixed(1)}%`)}
+      ${kpi('Ya Cobrado', S(T.cob), 'g', T.ing>0?`${(T.cob/T.ing*100).toFixed(1)}% del contrato`:'')}
+      ${kpi('Pendiente de Cobro', S(T.pcob), 'a', '')}
+      ${kpi('Ya Pagado', S(T.pag), 'b', '')}
+      ${kpi('Pendiente de Pago', S(T.ppag), 'r', '')}
+      ${kpi('Caja Neta Actual', S(T.cob-T.pag), (T.cob-T.pag)>=0?'g':'r', 'Cobrado − Pagado')}
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title"><span class="lbl">Ganancia por Proyecto</span></div>
+        <div class="chart-box" style="height:290px"><canvas id="chFinGan"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="lbl">Egresos por Categoría (todos los proyectos)</span></div>
+        <div class="chart-box" style="height:290px"><canvas id="chFinCat"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <div class="card-title"><span class="lbl">Ganancia por Tipo</span></div>
+        <div class="pw">
+          <div class="pl"><span>Supervisión</span><span>${S(sup)}</span></div>
+          <div class="pb"><div class="pf" style="width:${T.gan>0?Math.min(100,Math.max(sup,0)/T.gan*100):0}%;background:linear-gradient(90deg,#2980B9,#3498DB)"></div></div>
+        </div>
+        <div class="pw">
+          <div class="pl"><span>Elaboración</span><span>${S(ela)}</span></div>
+          <div class="pb"><div class="pf" style="width:${T.gan>0?Math.min(100,Math.max(ela,0)/T.gan*100):0}%;background:linear-gradient(90deg,#D35400,#E67E22)"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="lbl">Estado de Cobranza</span></div>
+        <div class="pw">
+          <div class="pl"><span>Cobrado</span><span>${S(T.cob)}</span></div>
+          <div class="pb"><div class="pf" style="width:${T.ing>0?Math.min(100,T.cob/T.ing*100):0}%;background:linear-gradient(90deg,#27AE60,#2ECC71)"></div></div>
+        </div>
+        <div class="pw">
+          <div class="pl"><span>Por cobrar</span><span>${S(T.pcob)}</span></div>
+          <div class="pb"><div class="pf" style="width:${T.ing>0?Math.min(100,T.pcob/T.ing*100):0}%;background:linear-gradient(90deg,#C08A0F,#FAB41E)"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="lbl">Proyecto Más Rentable</span></div>
+        ${(()=>{ const best=[...rows].sort((a,b)=>b.c.ganancia-a.c.ganancia)[0];
+          if(!best) return '<div class="empty">Sin datos</div>';
+          return `<div style="text-align:center;padding:6px 0">
+            <div style="font-size:0.72rem;color:rgba(245,241,232,0.45);text-transform:uppercase;letter-spacing:1px">${esc(best.p.nombre)}</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2.3rem;color:var(--green);line-height:1.15">${S(best.c.ganancia)}</div>
+            <div style="font-size:0.76rem;color:rgba(245,241,232,0.5)">Margen ${best.c.margen.toFixed(1)}%</div>
+          </div>`; })()}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="lbl">Detalle Financiero por Proyecto</span></div>
+      <div class="twrap">
+        <table>
+          <thead><tr>
+            <th>Proyecto</th><th>Tipo</th><th class="num">Contrato</th><th class="num">Egreso</th>
+            <th class="num">Ganancia</th><th class="num">Margen</th>
+            <th class="num">Cobrado</th><th class="num">Por Cobrar</th>
+            <th class="num">Pagado</th><th class="num">Por Pagar</th><th class="num">Caja</th>
+          </tr></thead>
+          <tbody>
+            ${rows.map(({p,c})=>`<tr>
+              <td style="font-weight:700">${esc(p.nombre)}</td>
+              <td><span class="bdg ${p.tipo==='supervision'?'sup':'ela'}">${p.tipo==='supervision'?'Sup.':'Elab.'}</span></td>
+              <td class="num">${S(c.ingresoTotal)}</td>
+              <td class="num" style="color:var(--red)">${S(c.egresoTotal)}</td>
+              <td class="num" style="color:${c.ganancia>=0?'var(--green)':'var(--red)'};font-weight:800">${S(c.ganancia)}</td>
+              <td class="num">${c.margen.toFixed(1)}%</td>
+              <td class="num" style="color:var(--green)">${S(c.cobrado)}</td>
+              <td class="num" style="color:var(--gold-light)">${S(c.porCobrar)}</td>
+              <td class="num" style="color:var(--blue)">${S(c.pagado)}</td>
+              <td class="num" style="color:var(--red)">${S(c.porPagar)}</td>
+              <td class="num" style="color:${c.caja>=0?'var(--green)':'var(--red)'}">${S(c.caja)}</td>
+            </tr>`).join('')}
+          </tbody>
+          <tfoot><tr>
+            <td colspan="2">TOTAL GENERAL</td>
+            <td class="num">${S(T.ing)}</td><td class="num">${S(T.egr)}</td>
+            <td class="num">${S(T.gan)}</td><td class="num">${margen.toFixed(1)}%</td>
+            <td class="num">${S(T.cob)}</td><td class="num">${S(T.pcob)}</td>
+            <td class="num">${S(T.pag)}</td><td class="num">${S(T.ppag)}</td>
+            <td class="num">${S(T.cob-T.pag)}</td>
+          </tr></tfoot>
+        </table>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn btn-primary btn-sm" onclick="exportCSV()">Exportar CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="lbl">Cobros Pendientes (flujo por entrar)</span></div>
+      <div class="twrap">
+        <table>
+          <thead><tr><th>Proyecto</th><th>Bloque</th><th>Concepto</th><th class="num">Monto</th></tr></thead>
+          <tbody>
+            ${(()=>{ const out=[];
+              proyectos.forEach(p=>(p.cobros||[]).forEach(g=>(g.items||[]).forEach(it=>{
+                if(it.estado!=='PAGADO' && num(it.monto)>0)
+                  out.push(`<tr><td>${esc(p.nombre)}</td><td style="color:rgba(245,241,232,0.55)">${esc(g.titulo)}</td>
+                    <td>${esc(it.desc)}</td><td class="num" style="color:var(--gold-light);font-weight:700">${S(it.monto)}</td></tr>`);
+              })));
+              return out.join('') || `<tr><td colspan="4" style="text-align:center;color:rgba(245,241,232,0.3);padding:18px">No hay cobros pendientes</td></tr>`;
+            })()}
+          </tbody>
+          <tfoot><tr><td colspan="3">TOTAL POR COBRAR</td><td class="num">${S(T.pcob)}</td></tr></tfoot>
+        </table>
+      </div>
+    </div>`;
+
+  // Gráfico ganancia por proyecto
+  killChart('chFinGan');
+  const c1 = document.getElementById('chFinGan');
+  if(c1) charts['chFinGan'] = new Chart(c1,{type:'bar',
+    data:{labels:rows.map(r=>r.p.nombre),
+      datasets:[{label:'Ganancia',data:rows.map(r=>r.c.ganancia),
+        backgroundColor:rows.map(r=>r.c.ganancia>=0?'rgba(46,204,113,0.7)':'rgba(231,76,60,0.7)'),borderRadius:6}]},
+    options:{...COPTS,indexAxis:'y',
+      plugins:{...COPTS.plugins,legend:{display:false},
+        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},
+          formatter:v=>'S/'+Number(v).toLocaleString('es-PE',{maximumFractionDigits:0})},
+        tooltip:{callbacks:{label:x=>S(x.raw)}}},
+      scales:{x:{ticks:{color:tc,callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}},
+              y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
+
+  // Gráfico egresos por categoría
+  killChart('chFinCat');
+  const c2 = document.getElementById('chFinCat');
+  const colores=['#E74C3C','#E67E22','#9B59B6','#3498DB','#1ABC9C','#95A5A6','#F39C12'];
+  if(c2 && catKeys.length) charts['chFinCat'] = new Chart(c2,{type:'bar',
+    data:{labels:catKeys,datasets:[{label:'Egreso',data:catKeys.map(k=>porCat[k]),
+      backgroundColor:catKeys.map((k,i)=>colores[i%colores.length]),borderRadius:6}]},
+    options:{...COPTS,indexAxis:'y',
+      plugins:{...COPTS.plugins,legend:{display:false},
+        datalabels:{anchor:'end',align:'end',color:'rgba(245,241,232,0.85)',font:{weight:'bold',size:10},
+          formatter:v=>'S/'+Number(v).toLocaleString('es-PE',{maximumFractionDigits:0})},
+        tooltip:{callbacks:{label:x=>S(x.raw)}}},
+      scales:{x:{ticks:{color:tc,callback:v=>'S/'+(v/1000)+'k'},grid:{color:gc}},
+              y:{ticks:{color:tc,font:{size:10}},grid:{color:'transparent'}}}}});
+}
+
+window.exportCSV = function(){
+  const rows=[['Proyecto','Tipo','Bloque','Concepto','Nombre/Empresa','Monto','Adelanto1','Adelanto2','Saldo','Estado']];
+  proyectos.forEach(p=>{
+    (p.cobros||[]).forEach(g=>(g.items||[]).forEach(it=>{
+      rows.push([p.nombre,'COBRO',g.titulo,it.desc||'','',num(it.monto),'','','',it.estado||'']);
+    }));
+    (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
+      const saldo=Math.max(num(it.monto)-num(it.adelanto1)-num(it.adelanto2),0);
+      rows.push([p.nombre,'EGRESO',g.titulo,it.especialidad||'',it.nombre||'',
+        num(it.monto),num(it.adelanto1),num(it.adelanto2),saldo,'']);
+    }));
+  });
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='vinarq_proyectos_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+window.closeModal = function(){ document.getElementById('ov').classList.remove('show'); }
+
+/* ═══════════ CARGA INICIAL DE DATOS (desde tu Excel) ═══════════ */
+async function seed(){
+  const P = [];
+
+  // ── SUPERVISIÓN HOSPITAL REGIONAL ──
+  P.push({id:'p_hospital', nombre:'Supervisión Hospital Regional', tipo:'supervision', orden:1,
+    cobros:[
+      {titulo:'DOCUMENTO EQUIVALENTE', items:[
+        {desc:'PLAN DE TRABAJO', monto:3359.224, estado:'PAGADO'},
+        {desc:'PRIMER ENTREGABLE', monto:8398.06, estado:'PAGADO'},
+        {desc:'SEGUNDO ENTREGABLE', monto:10077.672, estado:'SIN PAGAR'},
+        {desc:'TERCER ENTREGABLE', monto:11757.284, estado:'SIN PAGAR'}]},
+      {titulo:'EJECUCIÓN FÍSICA', items:[
+        {desc:'HITO CLAVE N°1', monto:15769.992, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°2', monto:15769.992, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°3', monto:15769.992, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°4', monto:15769.992, estado:'SIN PAGAR'},
+        {desc:'SUPERVISIÓN DE LA RECEPCIÓN', monto:7884.996, estado:'SIN PAGAR'},
+        {desc:'SUPERVISIÓN DE LIQUIDACIÓN', monto:7884.996, estado:'SIN PAGAR'}]}],
+    egresos:[
+      {titulo:'PERSONAL QUE FIRMA', columnas:'simple', items:[
+        {especialidad:'JEFE DE SUPERVISIÓN', nombre:'ALDO TALLEDO BLEST', monto:4000, adelanto1:0, adelanto2:0}]},
+      {titulo:'PERSONAL QUE ELABORA', columnas:'simple', items:[
+        {especialidad:'JEFE DE SUPERVISIÓN', nombre:'JESÚS CHAMPI', monto:10000, adelanto1:0, adelanto2:0}]}]});
+
+  // ── SUPERVISIÓN BELÉN ──
+  const supBelen = (nombre,id,orden)=>({id, nombre, tipo:'supervision', orden,
+    cobros:[
+      {titulo:'DOCUMENTO EQUIVALENTE', items:[
+        {desc:'PLAN DE TRABAJO', monto:3359.224, estado:'PAGADO'},
+        {desc:'ÚNICO ENTREGABLE', monto:30233.016, estado:'PAGADO'}]},
+      {titulo:'EJECUCIÓN FÍSICA', items:[
+        {desc:'HITO CLAVE N°1', monto:3503.89, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°2', monto:7007.78, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°3', monto:10511.68, estado:'SIN PAGAR'},
+        {desc:'HITO CLAVE N°4', monto:14511.68, estado:'SIN PAGAR'},
+        {desc:'SUPERVISIÓN DE LA RECEPCIÓN', monto:14837.32, estado:'SIN PAGAR'},
+        {desc:'SUPERVISIÓN DE LIQUIDACIÓN', monto:28973.72, estado:'SIN PAGAR'}]}],
+    egresos:[
+      {titulo:'PERSONAL QUE FIRMA', columnas:'simple', items:[
+        {especialidad:'JEFE DE SUPERVISIÓN', nombre:'ALDO TALLEDO BLEST', monto:4000, adelanto1:0, adelanto2:0}]},
+      {titulo:'PERSONAL QUE ELABORA', columnas:'simple', items:[
+        {especialidad:'JEFE DE SUPERVISIÓN', nombre:'JESÚS CHAMPI', monto:10000, adelanto1:0, adelanto2:0}]}]});
+  P.push(supBelen('Supervisión Belén','p_belen',2));
+  P.push(supBelen('Supervisión IREN','p_iren',3));
+
+  // ── ELABORACIÓN HUAMÁN ──
+  P.push({id:'p_huaman', nombre:'Elaboración Huamán', tipo:'elaboracion', orden:4,
+    cobros:[{titulo:'PAGOS DEL CLIENTE', items:[
+      {desc:'PAGO 1', monto:49099.8, estado:'PAGADO'},
+      {desc:'PAGO 2', monto:49099.8, estado:'SIN PAGAR'}]}],
+    egresos:[
+      {titulo:'PERSONAL QUE ELABORA', columnas:'full', items:[
+        {especialidad:'ESTRUCTURAS', nombre:'ING. DANIEL CELI VALLE', monto:5000, adelanto1:5000, adelanto2:0},
+        {especialidad:'ARQUITECTURA', nombre:'CHICOS VINARQ', monto:0, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES ELÉCTRICAS', nombre:'ING. LUIS EDIN SUCSE', monto:7500, adelanto1:7500, adelanto2:0},
+        {especialidad:'INSTALACIONES MECÁNICAS', nombre:'ING. LUIS EDIN SUCSE', monto:7500, adelanto1:7500, adelanto2:0},
+        {especialidad:'INSTALACIONES SANITARIAS', nombre:'ING. JOSÉ MANUEL', monto:15000, adelanto1:5000, adelanto2:0},
+        {especialidad:'COMUNICACIONES', nombre:'ING. MIULER', monto:15000, adelanto1:5000, adelanto2:0},
+        {especialidad:'METRADOS, COSTOS Y PRESUPUESTOS', nombre:'ING. MIGUEL', monto:0, adelanto1:0, adelanto2:0},
+        {especialidad:'EQUIPAMIENTO Y MOBILIARIO', nombre:'JESÚS CHAMPI', monto:4000, adelanto1:4000, adelanto2:0}]},
+      {titulo:'ESTUDIOS BÁSICOS', columnas:'full', items:[
+        {especialidad:'ESTUDIO DE MEDIA TENSIÓN', nombre:'ING. LUIS EDIN SUCSE', monto:8000, adelanto1:3000, adelanto2:0}]},
+      {titulo:'GASTOS DE OFICINA', columnas:'simple', items:[
+        {especialidad:'ÚTILES DE OFICINA', nombre:'TAILOY', monto:0, adelanto1:0, adelanto2:0}]}]});
+
+  // ── ELABORACIÓN LLACUABAMBA ──
+  P.push({id:'p_llacuabamba', nombre:'Elaboración Llacuabamba', tipo:'elaboracion', orden:5,
+    cobros:[{titulo:'PAGOS DEL CLIENTE', items:[
+      {desc:'PAGO 1', monto:100000, estado:'PAGADO'},
+      {desc:'PAGO 2', monto:120500, estado:'SIN PAGAR'},
+      {desc:'PAGO 3', monto:94500, estado:'SIN PAGAR'}]}],
+    egresos:[
+      {titulo:'PERSONAL QUE ELABORA', columnas:'full', items:[
+        {especialidad:'ESTRUCTURAS', nombre:'ING. DANIEL CELI VALLE', monto:0, adelanto1:0, adelanto2:0},
+        {especialidad:'ARQUITECTURA', nombre:'ERICK SEGURA', monto:20000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES ELÉCTRICAS', nombre:'ING. LUIS EDIN SUCSE', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES MECÁNICAS', nombre:'ING. LUIS EDIN SUCSE', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES SANITARIAS', nombre:'ING. CÉSAR ÁLVAREZ', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'COMUNICACIONES', nombre:'ING. MIULER', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'METRADOS, COSTOS Y PRESUPUESTOS', nombre:'ING. MIGUEL', monto:10000, adelanto1:0, adelanto2:0},
+        {especialidad:'EQUIPAMIENTO Y MOBILIARIO', nombre:'CHICOS VINARQ', monto:0, adelanto1:0, adelanto2:0}]},
+      {titulo:'ESTUDIOS BÁSICOS', columnas:'full', items:[
+        {especialidad:'ESTUDIO TOPOGRÁFICO', nombre:'C&A LABS', monto:12709, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE MECÁNICA DE SUELOS', nombre:'HUERTAS ESTRUCTURAS & GEOTECNIA', monto:21000, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE MEDIA TENSIÓN', nombre:'ING. LUIS EDIN SUCSE', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'CIRA', nombre:'ANA AQUINO', monto:1400, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE IMPACTO AMBIENTAL', nombre:'WILY SÁNCHEZ', monto:20000, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE EVALUACIÓN DE RIESGOS', nombre:'SERGIO LUNA', monto:6000, adelanto1:0, adelanto2:0}]},
+      {titulo:'GASTOS DE OFICINA', columnas:'simple', items:[
+        {especialidad:'ÚTILES DE OFICINA', nombre:'TAILOY', monto:0, adelanto1:0, adelanto2:0}]}]});
+
+  // ── ELABORACIÓN BOMBEROS ──
+  P.push({id:'p_bomberos', nombre:'Elaboración Bomberos', tipo:'elaboracion', orden:6,
+    cobros:[{titulo:'PAGOS DEL CLIENTE', items:[
+      {desc:'PAGO 1', monto:67500, estado:'PAGADO'},
+      {desc:'PAGO 2', monto:67500, estado:'SIN PAGAR'},
+      {desc:'PAGO 3', monto:157500, estado:'SIN PAGAR'},
+      {desc:'PAGO 4', monto:157500, estado:'SIN PAGAR'}]}],
+    egresos:[
+      {titulo:'PERSONAL QUE ELABORA', columnas:'full', items:[
+        {especialidad:'ESTRUCTURAS', nombre:'ING. DANIEL CELI VALLE', monto:25000, adelanto1:0, adelanto2:0},
+        {especialidad:'ARQUITECTURA', nombre:'CHICOS VINARQ', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES ELÉCTRICAS', nombre:'ING. LUIS EDIN SUCSE', monto:40000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES MECÁNICAS', nombre:'ING. LUIS EDIN SUCSE', monto:40000, adelanto1:0, adelanto2:0},
+        {especialidad:'INSTALACIONES SANITARIAS', nombre:'JOSÉ MANUEL', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'COMUNICACIONES', nombre:'ING. MIULER', monto:25000, adelanto1:0, adelanto2:0},
+        {especialidad:'METRADOS, COSTOS Y PRESUPUESTOS', nombre:'MIGUEL', monto:10000, adelanto1:0, adelanto2:0},
+        {especialidad:'EQUIPAMIENTO Y MOBILIARIO', nombre:'CHICOS VINARQ', monto:0, adelanto1:0, adelanto2:0}]},
+      {titulo:'ESTUDIOS BÁSICOS', columnas:'full', items:[
+        {especialidad:'ESTUDIO TOPOGRÁFICO', nombre:'C&A LABS', monto:10000, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE MECÁNICA DE SUELOS', nombre:'HUERTAS ESTRUCTURAS & GEOTECNIA', monto:30821.6, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE MEDIA TENSIÓN', nombre:'ING. LUIS EDIN SUCSE', monto:15000, adelanto1:0, adelanto2:0},
+        {especialidad:'CIRA', nombre:'ANA AQUINO', monto:1400, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE IMPACTO AMBIENTAL', nombre:'WILY SÁNCHEZ', monto:20000, adelanto1:0, adelanto2:0},
+        {especialidad:'ESTUDIO DE EVALUACIÓN DE RIESGOS', nombre:'SERGIO LUNA', monto:6000, adelanto1:0, adelanto2:0}]},
+      {titulo:'GASTOS DE OFICINA', columnas:'simple', items:[
+        {especialidad:'ÚTILES DE OFICINA', nombre:'TAILOY', monto:0, adelanto1:0, adelanto2:0}]}]});
+
+  for(const p of P){
+    const {id, ...data} = p;
+    await setDoc(doc(db,'proyectos',id), data);
+  }
+}
+</script>
+</body>
+</html>
