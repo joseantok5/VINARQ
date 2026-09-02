@@ -843,6 +843,28 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
   .project-main-hero:has(.inst-visual.photo) .photo-code{font-size:.48rem}
 }
 
+
+/* ═══════════════════════════════════════════════════════════════
+   VINARQ UI 2.6 · CONFIGURACIÓN ECONÓMICA DE PROYECTO
+   ═══════════════════════════════════════════════════════════════ */
+.project-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.project-form-grid .field{margin-bottom:0}
+.project-form-grid .field.full{grid-column:1/-1}
+.project-form-note{margin-top:14px;padding:12px 13px;border-radius:12px;border:1px solid rgba(250,180,30,.12);background:rgba(250,180,30,.035);color:rgba(242,241,235,.42);font-size:.66rem;line-height:1.55}
+.project-form-note strong{color:#ddb75d}
+.project-config-preview{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.project-config-preview .pcell{padding:12px;border-radius:12px;border:1px solid var(--line-soft);background:rgba(255,255,255,.02)}
+.project-config-preview .pcell span{display:block;font-size:.53rem;text-transform:uppercase;letter-spacing:1px;color:rgba(242,241,235,.28);font-weight:800;margin-bottom:7px}
+.project-config-preview .pcell b{font-family:'Bebas Neue',sans-serif;font-size:1.28rem;font-weight:400;color:var(--cream)}
+.project-config-preview .pcell.gold b{color:#ddb75d}
+.advance-head{white-space:nowrap}
+.advance-count-tag strong{color:#ddb75d}
+@media(max-width:560px){
+  .project-form-grid{grid-template-columns:1fr}
+  .project-form-grid .field.full{grid-column:auto}
+  .project-config-preview{grid-template-columns:1fr 1fr}
+}
+
 </style>
 </head>
 <body>
@@ -904,7 +926,7 @@ input:focus,select:focus,textarea:focus{border-color:rgba(250,180,30,.42);backgr
     <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar</button>
     <div class="msg" id="aMsg"></div>
     <p class="hint" style="text-align:center">
-      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ · v2.5.3</span>
+      <span style="color:rgba(245,241,232,.38)">Firebase conectado · VINARQ · v2.6</span>
     </p>
   </div>
 </div>
@@ -984,7 +1006,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
 import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, getDocs }
   from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-/* ═══════════ ARRANQUE · FIREBASE INTEGRADO · UI 2.5.3 ═══════════ */
+/* ═══════════ ARRANQUE · FIREBASE INTEGRADO · UI 2.5.2 ═══════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyBblRloRIY2_yS8BhZV7MbGEtF5rigRtys",
   authDomain: "vinarq-5c904.firebaseapp.com",
@@ -1077,36 +1099,73 @@ const tc = 'rgba(242,241,235,0.42)', gc = 'rgba(255,255,255,0.055)';
 const COPTS = {responsive:true,maintainAspectRatio:false,
   plugins:{legend:{labels:{color:'rgba(245,241,232,0.72)',font:{size:11}}},datalabels:{display:false}}};
 
+
+/* ═══════════ ADELANTOS DINÁMICOS ═══════════ */
+function advanceCount(p){
+  const raw = p && p.cantidadAdelantos !== undefined ? parseInt(p.cantidadAdelantos,10) : 2;
+  return Math.max(0,Math.min(12,Number.isFinite(raw)?raw:2));
+}
+function rawAdvanceValues(it){
+  if(Array.isArray(it?.adelantos)) return it.adelantos.map(num);
+  return [num(it?.adelanto1),num(it?.adelanto2)];
+}
+function advanceValues(it,p){
+  const n = advanceCount(p);
+  const a = rawAdvanceValues(it);
+  while(a.length<n) a.push(0);
+  return a.slice(0,n);
+}
+function sumAdelantos(it,p){
+  return advanceValues(it,p).reduce((s,v)=>s+num(v),0);
+}
+function removedAdvanceTotal(p,newCount){
+  let total=0;
+  (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
+    rawAdvanceValues(it).slice(newCount).forEach(v=>total+=num(v));
+  }));
+  return total;
+}
+function normalizeProjectAdvances(p,newCount){
+  newCount=Math.max(0,Math.min(12,parseInt(newCount,10)||0));
+  (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
+    let a=rawAdvanceValues(it).slice(0,newCount);
+    while(a.length<newCount) a.push(0);
+    it.adelantos=a;
+    it.adelanto1=num(a[0]);
+    it.adelanto2=num(a[1]);
+  }));
+  p.cantidadAdelantos=newCount;
+}
+
 /* ═══════════ CÁLCULOS DE PROYECTO ═══════════ */
 function calc(p){
-  const r = {ingresoTotal:0, cobrado:0, porCobrar:0, egresoTotal:0, pagado:0, porPagar:0, ganancia:0, margen:0};
+  const r={ingresoTotal:0,cobrado:0,porCobrar:0,cobrosProgramados:0,egresoTotal:0,pagado:0,porPagar:0,ganancia:0,margen:0,caja:0};
 
-  // Ingresos (cobros al cliente)
   (p.cobros||[]).forEach(grupo=>{
     (grupo.items||[]).forEach(it=>{
-      const m = num(it.monto);
-      r.ingresoTotal += m;
-      if(it.estado === 'PAGADO') r.cobrado += m; else r.porCobrar += m;
+      const m=num(it.monto);
+      r.cobrosProgramados+=m;
+      if(it.estado==='PAGADO') r.cobrado+=m;
     });
   });
-  // Si hay costoTotal declarado y no hay cobros, usarlo como referencia
-  if(r.ingresoTotal === 0) r.ingresoTotal = num(p.costoTotal);
 
-  // Egresos (lo que VINARQ paga)
+  const contratoDeclarado=num(p.costoTotal);
+  r.ingresoTotal=contratoDeclarado>0?contratoDeclarado:r.cobrosProgramados;
+  r.porCobrar=Math.max(r.ingresoTotal-r.cobrado,0);
+
   (p.egresos||[]).forEach(grupo=>{
     (grupo.items||[]).forEach(it=>{
-      const m = num(it.monto);
-      const a1 = num(it.adelanto1), a2 = num(it.adelanto2);
-      r.egresoTotal += m;
-      const ya = Math.min(a1+a2, m);
-      r.pagado += ya;
-      r.porPagar += Math.max(m - ya, 0);
+      const m=num(it.monto);
+      const ya=Math.min(sumAdelantos(it,p),m);
+      r.egresoTotal+=m;
+      r.pagado+=ya;
+      r.porPagar+=Math.max(m-ya,0);
     });
   });
 
-  r.ganancia = r.ingresoTotal - r.egresoTotal;
-  r.margen = r.ingresoTotal > 0 ? (r.ganancia / r.ingresoTotal * 100) : 0;
-  r.caja = r.cobrado - r.pagado;
+  r.ganancia=r.ingresoTotal-r.egresoTotal;
+  r.margen=r.ingresoTotal>0?(r.ganancia/r.ingresoTotal*100):0;
+  r.caja=r.cobrado-r.pagado;
   return r;
 }
 
@@ -1443,8 +1502,9 @@ function renderProyecto(p){
       <div class="section-tags">
         <div class="section-tag good">${esc(typeLabel)}</div>
         <div class="section-tag"><strong>${S(c.caja)}</strong> caja actual</div>
+        <div class="section-tag advance-count-tag"><strong>${advanceCount(p)}</strong> adelantos</div>
         <div class="section-actions">
-          <button class="btn btn-ghost btn-sm" onclick="editarProyecto('${p.id}')">Editar nombre</button>
+          <button class="btn btn-ghost btn-sm" onclick="editarProyecto('${p.id}')">Editar proyecto</button>
           <button class="btn btn-danger btn-sm" onclick="borrarProyecto('${p.id}')">Eliminar proyecto</button>
         </div>
       </div>
@@ -1627,22 +1687,24 @@ function bloqueCobro(p,g,gi){
 
 /* ── Bloque de EGRESOS (lo que pagamos) ── */
 function bloqueEgreso(p,g,gi){
-  const items = g.items||[];
-  const cols = g.columnas || 'full';
-  const tM = items.reduce((s,i)=>s+num(i.monto),0);
-  const tA1 = items.reduce((s,i)=>s+num(i.adelanto1),0);
-  const tA2 = items.reduce((s,i)=>s+num(i.adelanto2),0);
-  const tPag = items.reduce((s,i)=>s+Math.min(num(i.monto),num(i.adelanto1)+num(i.adelanto2)),0);
-  const tS  = items.reduce((s,i)=>s+Math.max(num(i.monto)-num(i.adelanto1)-num(i.adelanto2),0),0);
-  const full = cols === 'full';
-  const pct = tM>0 ? Math.min(100,tPag/tM*100) : 0;
+  const items=g.items||[];
+  const cols=g.columnas||'full';
+  const nAdv=advanceCount(p);
+  const full=cols==='full';
+  const tM=items.reduce((s,i)=>s+num(i.monto),0);
+  const tAdv=Array.from({length:nAdv},(_,ai)=>items.reduce((s,it)=>s+num(advanceValues(it,p)[ai]),0));
+  const tPag=items.reduce((s,it)=>s+Math.min(num(it.monto),sumAdelantos(it,p)),0);
+  const tS=items.reduce((s,it)=>s+Math.max(num(it.monto)-sumAdelantos(it,p),0),0);
+  const pct=tM>0?Math.min(100,tPag/tM*100):0;
+  const advHeaders=Array.from({length:nAdv},(_,ai)=>`<th class="num advance-head">Adelanto ${ai+1}</th>`).join('');
+  const advTotals=tAdv.map(v=>`<td class="num">${S(v)}</td>`).join('');
 
   return `
   <div class="portfolio-card block-card egreso">
     <div class="data-block-head">
       <div>
         <div class="data-block-title">${esc(g.titulo)} <span class="block-kind">Egresos</span></div>
-        <div class="data-block-sub">Compromisos y pagos del proyecto · ${items.length} ${items.length===1?'registro':'registros'} · ${full?'adelantos visibles':'vista simplificada'}</div>
+        <div class="data-block-sub">Compromisos y pagos del proyecto · ${items.length} ${items.length===1?'registro':'registros'} · ${nAdv} ${nAdv===1?'adelanto configurado':'adelantos configurados'} · ${full?'adelantos visibles':'vista simplificada'}</div>
       </div>
       <div class="block-actions">
         <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','egresos',${gi})">+ Fila</button>
@@ -1656,34 +1718,33 @@ function bloqueEgreso(p,g,gi){
       <div class="block-stat blue"><div class="bs-label">Pagado</div><div class="bs-value">${S(tPag)}</div><div class="bs-track"><i style="--w:${pct.toFixed(1)}%"></i></div></div>
       <div class="block-stat gold"><div class="bs-label">Saldo pendiente</div><div class="bs-value">${S(tS)}</div><div class="bs-track"><i style="--w:${(100-pct).toFixed(1)}%"></i></div></div>
     </div>
-    <div class="block-edit-hint">Edita directamente especialidad, responsable, monto y adelantos. El saldo se recalcula automáticamente.</div>
+    <div class="block-edit-hint">Edita directamente especialidad, responsable, monto y adelantos. La cantidad de adelantos se configura desde “Editar proyecto”.</div>
     <div class="twrap">
       <table>
         <thead><tr>
           <th class="row-no">#</th><th>Especialidad / Concepto</th><th>Nombre / Empresa</th>
           <th class="num">Monto</th>
-          ${full?'<th class="num">Adelanto 1</th><th class="num">Adelanto 2</th><th class="num">Saldo</th>':''}
+          ${full?advHeaders+'<th class="num">Saldo</th>':''}
           <th style="width:54px"></th>
         </tr></thead>
         <tbody>
           ${items.map((it,ii)=>{
-            const saldo = Math.max(num(it.monto)-num(it.adelanto1)-num(it.adelanto2),0);
+            const av=advanceValues(it,p);
+            const saldo=Math.max(num(it.monto)-av.reduce((s,v)=>s+num(v),0),0);
+            const advCells=av.map((v,ai)=>`<td><input type="number" step="0.01" min="0" value="${num(v)}" onchange="setAdelanto('${p.id}',${gi},${ii},${ai},this.value)"></td>`).join('');
             return `<tr>
               <td class="row-no">${String(ii+1).padStart(2,'0')}</td>
               <td><input value="${esc(it.especialidad)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'especialidad',this.value)"></td>
               <td><input value="${esc(it.nombre)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'nombre',this.value)"></td>
-              <td><input type="number" step="0.01" value="${num(it.monto)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'monto',this.value)"></td>
-              ${full?`
-              <td><input type="number" step="0.01" value="${num(it.adelanto1)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto1',this.value)"></td>
-              <td><input type="number" step="0.01" value="${num(it.adelanto2)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'adelanto2',this.value)"></td>
-              <td class="num"><span class="saldo-pill ${saldo>0?'pending':'done'}">${S(saldo)}</span></td>`:''}
+              <td><input type="number" step="0.01" min="0" value="${num(it.monto)}" onchange="setItem('${p.id}','egresos',${gi},${ii},'monto',this.value)"></td>
+              ${full?advCells+`<td class="num"><span class="saldo-pill ${saldo>0?'pending':'done'}">${S(saldo)}</span></td>`:''}
               <td style="text-align:center"><button class="btn btn-danger btn-sm row-delete" title="Eliminar fila" onclick="delItem('${p.id}','egresos',${gi},${ii})">✕</button></td>
-            </tr>`;}).join('') || `<tr><td colspan="${full?8:5}" style="text-align:center;color:rgba(245,241,235,0.3);padding:22px">Sin filas — usa "+ Fila" para comenzar</td></tr>`}
+            </tr>`;}).join('')||`<tr><td colspan="${full?6+nAdv:5}" style="text-align:center;color:rgba(245,241,232,0.3);padding:22px">Sin filas — usa "+ Fila" para comenzar</td></tr>`}
         </tbody>
         <tfoot><tr>
           <td></td><td colspan="2" class="block-total-label">Total del bloque</td>
           <td class="num block-total-value">${S(tM)}</td>
-          ${full?`<td class="num">${S(tA1)}</td><td class="num">${S(tA2)}</td><td class="num block-total-value">${S(tS)}</td>`:''}
+          ${full?advTotals+`<td class="num block-total-value">${S(tS)}</td>`:''}
           <td></td>
         </tr></tfoot>
       </table>
@@ -1693,16 +1754,32 @@ function bloqueEgreso(p,g,gi){
 
 /* ═══════════ EDICIÓN ═══════════ */
 window.setItem = async function(pid,tipo,gi,ii,campo,val){
-  const p = proyectos.find(x=>x.id===pid); if(!p) return;
-  p[tipo][gi].items[ii][campo] = (campo==='monto'||campo.startsWith('adelanto')) ? num(val) : val;
+  const p=proyectos.find(x=>x.id===pid); if(!p) return;
+  p[tipo][gi].items[ii][campo]=campo==='monto'?Math.max(0,num(val)):val;
+  await guardar(p);
+}
+window.setAdelanto = async function(pid,gi,ii,ai,val){
+  const p=proyectos.find(x=>x.id===pid); if(!p) return;
+  const it=p.egresos?.[gi]?.items?.[ii]; if(!it) return;
+  const n=advanceCount(p);
+  let a=rawAdvanceValues(it);
+  while(a.length<n) a.push(0);
+  a=a.slice(0,n);
+  if(ai>=0&&ai<n) a[ai]=Math.max(0,num(val));
+  it.adelantos=a;
+  it.adelanto1=num(a[0]);
+  it.adelanto2=num(a[1]);
   await guardar(p);
 }
 window.addItem = async function(pid,tipo,gi){
-  const p = proyectos.find(x=>x.id===pid); if(!p) return;
-  p[tipo][gi].items = p[tipo][gi].items || [];
-  p[tipo][gi].items.push(tipo==='cobros'
-    ? {desc:'Nuevo cobro', monto:0, estado:'SIN PAGAR'}
-    : {especialidad:'Nuevo concepto', nombre:'', monto:0, adelanto1:0, adelanto2:0});
+  const p=proyectos.find(x=>x.id===pid); if(!p) return;
+  p[tipo][gi].items=p[tipo][gi].items||[];
+  if(tipo==='cobros'){
+    p[tipo][gi].items.push({desc:'Nuevo cobro',monto:0,estado:'SIN PAGAR'});
+  }else{
+    const a=Array.from({length:advanceCount(p)},()=>0);
+    p[tipo][gi].items.push({especialidad:'Nuevo concepto',nombre:'',monto:0,adelantos:a,adelanto1:num(a[0]),adelanto2:num(a[1])});
+  }
   await guardar(p);
 }
 window.delItem = async function(pid,tipo,gi,ii){
@@ -1737,37 +1814,110 @@ window.toggleCols = async function(pid,gi){
   p.egresos[gi].columnas = (p.egresos[gi].columnas||'full')==='full' ? 'simple' : 'full';
   await guardar(p);
 }
-window.editarProyecto = async function(pid){
-  const p = proyectos.find(x=>x.id===pid); if(!p) return;
-  const n = prompt('Nombre del proyecto:', p.nombre);
-  if(!n) return;
-  p.nombre = n;
-  await guardar(p);
+function showProjectModal(mode,pid=null){
+  const isEdit=mode==='edit';
+  const p=isEdit?proyectos.find(x=>x.id===pid):null;
+  if(isEdit&&!p) return;
+
+  const currentAmount=isEdit?calc(p).ingresoTotal:0;
+  const currentAdv=isEdit?advanceCount(p):2;
+  const currentType=isEdit?p.tipo:'supervision';
+
+  document.getElementById('mTitle').textContent=isEdit?'Editar proyecto':'Nuevo proyecto';
+  const msg=document.getElementById('mMsg');
+  msg.className='msg'; msg.textContent='';
+
+  document.getElementById('mBody').innerHTML=`
+    <div class="project-form-grid">
+      <div class="field full">
+        <label>Nombre del proyecto</label>
+        <input id="pfNombre" value="${esc(isEdit?p.nombre:'')}" placeholder="Ej. Supervisión Hospital Regional">
+      </div>
+      ${isEdit?`
+      <div class="field full">
+        <label>Tipo de proyecto</label>
+        <input value="${currentType==='supervision'?'Supervisión':'Elaboración'}" disabled>
+      </div>`:`
+      <div class="field">
+        <label>Tipo de proyecto</label>
+        <select id="pfTipo">
+          <option value="supervision">Supervisión</option>
+          <option value="elaboracion">Elaboración</option>
+        </select>
+      </div>`}
+      <div class="field ${isEdit?'full':''}">
+        <label>Monto contratado (S/)</label>
+        <input id="pfMonto" type="number" min="0" step="0.01" value="${num(currentAmount)}" placeholder="0.00">
+      </div>
+      <div class="field ${isEdit?'full':''}">
+        <label>Cantidad de adelantos</label>
+        <input id="pfAdelantos" type="number" min="0" max="12" step="1" value="${currentAdv}">
+      </div>
+    </div>
+    <div class="project-config-preview">
+      <div class="pcell gold"><span>Monto actual / inicial</span><b>${S(currentAmount)}</b></div>
+      <div class="pcell"><span>Adelantos configurados</span><b>${currentAdv}</b></div>
+    </div>
+    <div class="project-form-note">
+      <strong>Monto contratado:</strong> será la fuente maestra para Ganancia y Pendiente de cobro. Los bloques de cobros seguirán representando la programación de pagos del cliente.<br><br>
+      <strong>Adelantos:</strong> define cuántas columnas de adelanto tendrá cada fila de egresos del proyecto, entre 0 y 12.
+    </div>`;
+
+  const save=document.getElementById('mSave');
+  save.textContent=isEdit?'Guardar cambios':'Crear proyecto';
+  save.onclick=async()=>{
+    const nombre=document.getElementById('pfNombre').value.trim();
+    const monto=Math.max(0,num(document.getElementById('pfMonto').value));
+    let cant=parseInt(document.getElementById('pfAdelantos').value,10);
+    cant=Number.isFinite(cant)?Math.max(0,Math.min(12,cant)):0;
+
+    if(!nombre){msg.className='msg err show';msg.textContent='Ingresa el nombre del proyecto.';return;}
+    if(!(monto>0)){msg.className='msg err show';msg.textContent='El monto contratado debe ser mayor que cero.';return;}
+
+    try{
+      if(isEdit){
+        const oldCount=advanceCount(p);
+        if(cant<oldCount){
+          const removed=removedAdvanceTotal(p,cant);
+          if(removed>0&&!confirm(`Al reducir de ${oldCount} a ${cant} adelantos se eliminarán ${S(removed)} registrados en las columnas que desaparecerán. ¿Continuar?`)) return;
+        }
+        p.nombre=nombre;
+        p.costoTotal=monto;
+        normalizeProjectAdvances(p,cant);
+        await guardar(p);
+      }else{
+        const tipo=document.getElementById('pfTipo').value;
+        const id='p_'+uid();
+        const base=tipo==='supervision'
+          ? {nombre,tipo,orden:proyectos.length+1,costoTotal:monto,cantidadAdelantos:cant,
+             cobros:[{titulo:'DOCUMENTO EQUIVALENTE',items:[]},{titulo:'EJECUCIÓN FÍSICA',items:[]}],
+             egresos:[{titulo:'PERSONAL QUE FIRMA',columnas:'full',items:[]},{titulo:'PERSONAL QUE ELABORA',columnas:'full',items:[]}]}
+          : {nombre,tipo,orden:proyectos.length+1,costoTotal:monto,cantidadAdelantos:cant,
+             cobros:[{titulo:'PAGOS DEL CLIENTE',items:[]}],
+             egresos:[{titulo:'PERSONAL QUE ELABORA',columnas:'full',items:[]},{titulo:'ESTUDIOS BÁSICOS',columnas:'full',items:[]},{titulo:'GASTOS DE OFICINA',columnas:'simple',items:[]}]};
+        await setDoc(doc(db,'proyectos',id),base);
+        activeTab=id;
+      }
+      closeModal();
+    }catch(err){
+      msg.className='msg err show';
+      msg.textContent='No se pudo guardar: '+err.message;
+    }
+  };
+
+  document.getElementById('ov').classList.add('show');
+  setTimeout(()=>document.getElementById('pfNombre')?.focus(),80);
 }
+
+window.editarProyecto=function(pid){showProjectModal('edit',pid);}
+
 window.borrarProyecto = async function(pid){
   const p = proyectos.find(x=>x.id===pid); if(!p) return;
   if(!confirm(`¿Eliminar el proyecto "${p.nombre}" con todos sus datos?\n\nEsta acción no se puede deshacer.`)) return;
   await deleteDoc(doc(db,'proyectos',pid));
   activeTab = 'resumen';
 }
-window.nuevoProyecto = async function(){
-  const nombre = prompt('Nombre del nuevo proyecto:');
-  if(!nombre) return;
-  const tipo = confirm('¿Es un proyecto de SUPERVISIÓN?\n\nAceptar = Supervisión\nCancelar = Elaboración')
-    ? 'supervision' : 'elaboracion';
-  const id = 'p_'+uid();
-  const base = tipo==='supervision'
-    ? {nombre, tipo, orden: proyectos.length+1,
-       cobros:[{titulo:'DOCUMENTO EQUIVALENTE',items:[]},{titulo:'EJECUCIÓN FÍSICA',items:[]}],
-       egresos:[{titulo:'PERSONAL QUE FIRMA',columnas:'full',items:[]},{titulo:'PERSONAL QUE ELABORA',columnas:'full',items:[]}]}
-    : {nombre, tipo, orden: proyectos.length+1,
-       cobros:[{titulo:'PAGOS DEL CLIENTE',items:[]}],
-       egresos:[{titulo:'PERSONAL QUE ELABORA',columnas:'full',items:[]},
-                {titulo:'ESTUDIOS BÁSICOS',columnas:'full',items:[]},
-                {titulo:'GASTOS DE OFICINA',columnas:'simple',items:[]}]};
-  await setDoc(doc(db,'proyectos',id), base);
-  activeTab = id;
-}
+window.nuevoProyecto=function(){showProjectModal('new');}
 
 /* ═══════════ FINANZAS CONSOLIDADAS ═══════════ */
 function renderFinanzas(){
@@ -1994,18 +2144,24 @@ function renderFinanzas(){
 }
 
 window.exportCSV = function(){
-  const rows=[['Proyecto','Tipo','Bloque','Concepto','Nombre/Empresa','Monto','Adelanto1','Adelanto2','Saldo','Estado']];
+  const maxAdv=proyectos.reduce((m,p)=>Math.max(m,advanceCount(p)),0);
+  const advHeaders=Array.from({length:maxAdv},(_,i)=>`Adelanto ${i+1}`);
+  const rows=[['Proyecto','Tipo','Bloque','Concepto','Nombre/Empresa','Monto',...advHeaders,'Saldo','Estado']];
+
   proyectos.forEach(p=>{
     (p.cobros||[]).forEach(g=>(g.items||[]).forEach(it=>{
-      rows.push([p.nombre,'COBRO',g.titulo,it.desc||'','',num(it.monto),'','','',it.estado||'']);
+      rows.push([p.nombre,'COBRO',g.titulo,it.desc||'','',num(it.monto),...Array(maxAdv).fill(''),'',
+        it.estado||'']);
     }));
     (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
-      const saldo=Math.max(num(it.monto)-num(it.adelanto1)-num(it.adelanto2),0);
-      rows.push([p.nombre,'EGRESO',g.titulo,it.especialidad||'',it.nombre||'',
-        num(it.monto),num(it.adelanto1),num(it.adelanto2),saldo,'']);
+      const a=advanceValues(it,p);
+      const saldo=Math.max(num(it.monto)-a.reduce((s,v)=>s+num(v),0),0);
+      const vals=[...a,...Array(Math.max(0,maxAdv-a.length)).fill('')];
+      rows.push([p.nombre,'EGRESO',g.titulo,it.especialidad||'',it.nombre||'',num(it.monto),...vals,saldo,'']);
     }));
   });
-  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
   a.download='vinarq_proyectos_'+new Date().toISOString().slice(0,10)+'.csv';
