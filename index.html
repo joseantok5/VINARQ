@@ -1139,27 +1139,34 @@ function rawAdvanceValues(it){
   if(Array.isArray(it?.adelantos)) return it.adelantos.map(num);
   return [num(it?.adelanto1),num(it?.adelanto2)];
 }
-function advanceValues(it,p){
-  const n = advanceCount(p);
+function isSigningStaff(p,g){
+  return p?.tipo==='supervision' && normalizeBlockTitle(g?.titulo)==='PERSONAL QUE FIRMA';
+}
+function blockAdvanceCount(p,g,count=advanceCount(p)){
+  return isSigningStaff(p,g)?Math.max(2,count):count;
+}
+function advanceValues(it,p,g){
+  const n = blockAdvanceCount(p,g);
   const a = rawAdvanceValues(it);
   while(a.length<n) a.push(0);
   return a.slice(0,n);
 }
-function sumAdelantos(it,p){
-  return advanceValues(it,p).reduce((s,v)=>s+num(v),0);
+function sumAdelantos(it,p,g){
+  return advanceValues(it,p,g).reduce((s,v)=>s+num(v),0);
 }
 function removedAdvanceTotal(p,newCount){
   let total=0;
   (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
-    rawAdvanceValues(it).slice(newCount).forEach(v=>total+=num(v));
+    rawAdvanceValues(it).slice(blockAdvanceCount(p,g,newCount)).forEach(v=>total+=num(v));
   }));
   return total;
 }
 function normalizeProjectAdvances(p,newCount){
   newCount=Math.max(0,Math.min(12,parseInt(newCount,10)||0));
   (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
-    let a=rawAdvanceValues(it).slice(0,newCount);
-    while(a.length<newCount) a.push(0);
+    const n=blockAdvanceCount(p,g,newCount);
+    let a=rawAdvanceValues(it).slice(0,n);
+    while(a.length<n) a.push(0);
     it.adelantos=a;
     it.adelanto1=num(a[0]);
     it.adelanto2=num(a[1]);
@@ -1186,7 +1193,7 @@ function calc(p){
   (p.egresos||[]).forEach(grupo=>{
     (grupo.items||[]).forEach(it=>{
       const m=num(it.monto);
-      const ya=Math.min(sumAdelantos(it,p),m);
+      const ya=Math.min(sumAdelantos(it,p,grupo),m);
       r.egresoTotal+=m;
       r.pagado+=ya;
       r.porPagar+=Math.max(m-ya,0);
@@ -1734,12 +1741,13 @@ function bloqueCobro(p,g,gi){
 function bloqueEgreso(p,g,gi){
   const items=g.items||[];
   const cols=g.columnas||'full';
-  const nAdv=advanceCount(p);
-  const full=cols==='full';
+  const signingStaff=isSigningStaff(p,g);
+  const nAdv=blockAdvanceCount(p,g);
+  const full=signingStaff||cols==='full';
   const tM=items.reduce((s,i)=>s+num(i.monto),0);
-  const tAdv=Array.from({length:nAdv},(_,ai)=>items.reduce((s,it)=>s+num(advanceValues(it,p)[ai]),0));
-  const tPag=items.reduce((s,it)=>s+Math.min(num(it.monto),sumAdelantos(it,p)),0);
-  const tS=items.reduce((s,it)=>s+Math.max(num(it.monto)-sumAdelantos(it,p),0),0);
+  const tAdv=Array.from({length:nAdv},(_,ai)=>items.reduce((s,it)=>s+num(advanceValues(it,p,g)[ai]),0));
+  const tPag=items.reduce((s,it)=>s+Math.min(num(it.monto),sumAdelantos(it,p,g)),0);
+  const tS=items.reduce((s,it)=>s+Math.max(num(it.monto)-sumAdelantos(it,p,g),0),0);
   const pct=tM>0?Math.min(100,tPag/tM*100):0;
   const advHeaders=Array.from({length:nAdv},(_,ai)=>`<th class="num advance-head">Adelanto ${ai+1}</th>`).join('');
   const advTotals=tAdv.map(v=>`<td class="num">${S(v)}</td>`).join('');
@@ -1756,7 +1764,7 @@ function bloqueEgreso(p,g,gi){
       </div>
       <div class="block-actions">
         <button class="btn btn-green btn-sm" onclick="addItem('${p.id}','egresos',${gi})">+ Fila</button>
-        <button class="btn btn-ghost btn-sm" onclick="toggleCols('${p.id}',${gi})">${full?'Ocultar adelantos':'Mostrar adelantos'}</button>
+        ${signingStaff?'':`<button class="btn btn-ghost btn-sm" onclick="toggleCols('${p.id}',${gi})">${full?'Ocultar adelantos':'Mostrar adelantos'}</button>`}
         <button class="btn btn-ghost btn-sm" onclick="renombrarGrupo('${p.id}','egresos',${gi})">Renombrar</button>
         <button class="btn btn-danger btn-sm" onclick="delGrupo('${p.id}','egresos',${gi})">Borrar bloque</button>
       </div>
@@ -1766,7 +1774,7 @@ function bloqueEgreso(p,g,gi){
       <div class="block-stat blue"><div class="bs-label">Pagado</div><div class="bs-value">${S(tPag)}</div><div class="bs-track"><i style="--w:${pct.toFixed(1)}%"></i></div></div>
       <div class="block-stat gold"><div class="bs-label">Saldo pendiente</div><div class="bs-value">${S(tS)}</div><div class="bs-track"><i style="--w:${(100-pct).toFixed(1)}%"></i></div></div>
     </div>
-    <div class="block-edit-hint">Edita directamente especialidad, responsable, monto y adelantos. La cantidad de adelantos se configura desde “Editar proyecto”.</div>
+    <div class="block-edit-hint">Edita directamente especialidad, responsable, monto y adelantos. ${signingStaff?'Este bloque muestra siempre al menos Adelanto 1 y Adelanto 2.':'La cantidad de adelantos se configura desde “Editar proyecto”.'}</div>
     <div class="twrap">
       <table>
         <thead><tr>
@@ -1777,7 +1785,7 @@ function bloqueEgreso(p,g,gi){
         </tr></thead>
         <tbody>
           ${items.map((it,ii)=>{
-            const av=advanceValues(it,p);
+            const av=advanceValues(it,p,g);
             const saldo=Math.max(num(it.monto)-av.reduce((s,v)=>s+num(v),0),0);
             const advCells=av.map((v,ai)=>`<td><input type="number" step="0.01" min="0" value="${num(v)}" onchange="setAdelanto('${p.id}',${gi},${ii},${ai},this.value)"></td>`).join('');
             return `<tr>
@@ -1809,7 +1817,7 @@ window.setItem = async function(pid,tipo,gi,ii,campo,val){
 window.setAdelanto = async function(pid,gi,ii,ai,val){
   const p=proyectos.find(x=>x.id===pid); if(!p) return;
   const it=p.egresos?.[gi]?.items?.[ii]; if(!it) return;
-  const n=advanceCount(p);
+  const n=blockAdvanceCount(p,p.egresos[gi]);
   let a=rawAdvanceValues(it);
   while(a.length<n) a.push(0);
   a=a.slice(0,n);
@@ -1825,7 +1833,7 @@ window.addItem = async function(pid,tipo,gi){
   if(tipo==='cobros'){
     p[tipo][gi].items.push({desc:'Nuevo cobro',monto:0,estado:'SIN PAGAR'});
   }else{
-    const a=Array.from({length:advanceCount(p)},()=>0);
+    const a=Array.from({length:blockAdvanceCount(p,p[tipo][gi])},()=>0);
     p[tipo][gi].items.push({especialidad:'Nuevo concepto',nombre:'',monto:0,adelantos:a,adelanto1:num(a[0]),adelanto2:num(a[1])});
   }
   await guardar(p);
@@ -1859,6 +1867,7 @@ window.renombrarGrupo = async function(pid,tipo,gi){
 }
 window.toggleCols = async function(pid,gi){
   const p = proyectos.find(x=>x.id===pid); if(!p) return;
+  if(isSigningStaff(p,p.egresos[gi])) return;
   p.egresos[gi].columnas = (p.egresos[gi].columnas||'full')==='full' ? 'simple' : 'full';
   await guardar(p);
 }
@@ -2211,7 +2220,7 @@ function renderFinanzas(){
 }
 
 window.exportCSV = function(){
-  const maxAdv=proyectos.reduce((m,p)=>Math.max(m,advanceCount(p)),0);
+  const maxAdv=proyectos.reduce((m,p)=>Math.max(m,advanceCount(p),...(p.egresos||[]).map(g=>blockAdvanceCount(p,g))),0);
   const advHeaders=Array.from({length:maxAdv},(_,i)=>`Adelanto ${i+1}`);
   const rows=[['Proyecto','Tipo','Bloque','Concepto','Nombre/Empresa','Monto',...advHeaders,'Saldo','Estado']];
 
@@ -2221,7 +2230,7 @@ window.exportCSV = function(){
         it.estado||'']);
     }));
     (p.egresos||[]).forEach(g=>(g.items||[]).forEach(it=>{
-      const a=advanceValues(it,p);
+      const a=advanceValues(it,p,g);
       const saldo=Math.max(num(it.monto)-a.reduce((s,v)=>s+num(v),0),0);
       const vals=[...a,...Array(Math.max(0,maxAdv-a.length)).fill('')];
       rows.push([p.nombre,'EGRESO',g.titulo,it.especialidad||'',it.nombre||'',num(it.monto),...vals,saldo,'']);
